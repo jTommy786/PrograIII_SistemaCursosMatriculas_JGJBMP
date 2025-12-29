@@ -6,6 +6,3 @@ import java.sql.SQLException;
 void main() {
 
 }
-
-
-
