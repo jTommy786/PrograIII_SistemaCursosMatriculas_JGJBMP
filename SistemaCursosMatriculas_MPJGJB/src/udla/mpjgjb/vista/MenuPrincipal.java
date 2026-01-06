@@ -2,6 +2,9 @@ package udla.mpjgjb.vista;
 
 import java.util.Scanner;
 import udla.mpjgjb.servicio.ServicioMatricula;
+import udla.mpjgjb.servicio.ServicioCurso;
+import udla.mpjgjb.servicio.ServicioEstudiante;
+import udla.mpjgjb.servicio.ServicioDocente;
 import udla.mpjgjb.dao.EstudianteDAO;
 
 public class MenuPrincipal {
@@ -137,6 +140,7 @@ public class MenuPrincipal {
     
     // Menu de gestion de estudiantes
     private void menuEstudiantes() {
+        ServicioEstudiante servicioEstudiante = new ServicioEstudiante();
         boolean volver = false;
         
         while (!volver) {
@@ -162,20 +166,30 @@ public class MenuPrincipal {
             
             switch (opcion) {
                 case 1:
-                    System.out.println("\n[Placeholder: Juan]");
-                    // servicioEstudiante.registrar();
+                    servicioEstudiante.registrar();
                     break;
                 case 2:
-                    System.out.println("\n[Placeholder: Juan]");
-                    // servicioEstudiante.listar();
+                    servicioEstudiante.listar();
                     break;
                 case 3:
-                    System.out.println("\n[Placeholder: Juan]");
-                    // buscar estudiante
+                    System.out.print("Ingrese ID del estudiante: ");
+                    String idEstudianteStr = scanner.nextLine();
+                    int idEstudiante = convertirAEntero(idEstudianteStr);
+                    if (idEstudiante > 0) {
+                        servicioEstudiante.buscar(idEstudiante);
+                    } else {
+                        System.out.println("ERROR: ID inválido");
+                    }
                     break;
                 case 4:
-                    System.out.println("\n[Placeholder: Juan]");
-                    // actualizar estudiante
+                    System.out.print("Ingrese ID del estudiante a actualizar: ");
+                    String idActStr = scanner.nextLine();
+                    int idAct = convertirAEntero(idActStr);
+                    if (idAct > 0) {
+                        servicioEstudiante.actualizar(idAct);
+                    } else {
+                        System.out.println("ERROR: ID inválido");
+                    }
                     break;
                 case 0:
                     volver = true;
@@ -188,6 +202,7 @@ public class MenuPrincipal {
     
     // Menu de gestion de docentes
     private void menuDocentes() {
+        ServicioDocente servicioDocente = new ServicioDocente();
         boolean volver = false;
         
         while (!volver) {
@@ -212,16 +227,20 @@ public class MenuPrincipal {
             
             switch (opcion) {
                 case 1:
-                    System.out.println("\n[Placeholder: Juan]");
-                    // servicioDocente.registrar();
+                    servicioDocente.registrar();
                     break;
                 case 2:
-                    System.out.println("\n[Placeholder: Juan]");
-                    // servicioDocente.listar();
+                    servicioDocente.listar();
                     break;
                 case 3:
-                    System.out.println("\n[Placeholder: Juan]");
-                    // buscar docente
+                    System.out.print("Ingrese ID del docente: ");
+                    String idDocenteStr = scanner.nextLine();
+                    int idDocente = convertirAEntero(idDocenteStr);
+                    if (idDocente > 0) {
+                        servicioDocente.buscar(idDocente);
+                    } else {
+                        System.out.println("ERROR: ID inválido");
+                    }
                     break;
                 case 0:
                     volver = true;
@@ -234,8 +253,7 @@ public class MenuPrincipal {
     
     // Menu de gestion de cursos
     private void menuCursos() {
-        // Aqui se crearia ServicioCurso
-        // ServicioCurso servicioCurso = new ServicioCurso();
+        ServicioCurso servicioCurso = new ServicioCurso();
         
         boolean volver = false;
         
@@ -262,15 +280,12 @@ public class MenuPrincipal {
             
             switch (opcion) {
                 case 1:
-                    System.out.println("\n[Funcionalidad de Mateo - Pendiente]");
-                    // servicioCurso.registrar();
+                    servicioCurso.registrar();
                     break;
                 case 2:
-                    System.out.println("\n[Funcionalidad de Mateo - Pendiente]");
-                    // servicioCurso.listar();
+                    servicioCurso.listar();
                     break;
                 case 3:
-                    System.out.println("\n[Funcionalidad de Mateo - Pendiente]");
                     System.out.print("ID del curso: ");
                     String inputCurso = scanner.nextLine();
                     int cursoId = convertirAEntero(inputCurso);
@@ -288,11 +303,10 @@ public class MenuPrincipal {
                         System.out.println("Error: ID de docente invalido.");
                         break;
                     }
-                    // servicioCurso.asignarDocente(cursoId, docenteId);
+                    servicioCurso.asignarDocente(cursoId, docenteId);
                     break;
                 case 4:
-                    System.out.println("\n[Funcionalidad de Mateo - Pendiente]");
-                    // servicioCurso.verCuposDisponibles();
+                    servicioCurso.verCuposDisponibles();
                     break;
                 case 0:
                     volver = true;
