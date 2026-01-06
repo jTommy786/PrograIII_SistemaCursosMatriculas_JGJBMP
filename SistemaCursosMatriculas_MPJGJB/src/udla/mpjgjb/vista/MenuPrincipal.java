@@ -1,6 +1,8 @@
 package udla.mpjgjb.vista;
 
 import java.util.Scanner;
+import udla.mpjgjb.servicio.ServicioMatricula;
+import udla.mpjgjb.dao.EstudianteDAO;
 
 public class MenuPrincipal {
     
@@ -303,6 +305,9 @@ public class MenuPrincipal {
     
     // Menu de matriculas
     private void menuMatriculas() {
+        ServicioMatricula servicioMatricula = new ServicioMatricula();
+        EstudianteDAO estudianteDAO = new EstudianteDAO();
+        
         boolean volver = false;
         
         while (!volver) {
@@ -312,7 +317,9 @@ public class MenuPrincipal {
             System.out.println("====================================================");
             System.out.println("1. Matricular estudiante");
             System.out.println("2. Listar matriculas");
-            System.out.println("3. Cancelar matricula");
+            System.out.println("3. Ver estudiantes matriculados en curso");
+            System.out.println("4. Ver cursos de un estudiante");
+            System.out.println("5. Cancelar matricula");
             System.out.println("0. Volver al menu principal");
             System.out.println("====================================================");
             System.out.print("Seleccione una opcion: ");
@@ -327,16 +334,33 @@ public class MenuPrincipal {
             
             switch (opcion) {
                 case 1:
-                    System.out.println("\n[Placeholder: Julian]");
-                    // matricular estudiante
+                    servicioMatricula.registrar();
                     break;
                 case 2:
-                    System.out.println("\n[Placeholder: Julian]");
-                    // listar matriculas
+                    servicioMatricula.listar();
                     break;
                 case 3:
-                    System.out.println("\n[Placeholder: Julian]");
-                    // cancelar matricula
+                    System.out.print("Ingrese ID del curso: ");
+                    String idCursoStr = scanner.nextLine();
+                    int idCurso = convertirAEntero(idCursoStr);
+                    if (idCurso > 0) {
+                        servicioMatricula.obtenerEstudiantesDelCurso(idCurso);
+                    } else {
+                        System.out.println("ERROR: ID inválido");
+                    }
+                    break;
+                case 4:
+                    System.out.print("Ingrese ID del estudiante: ");
+                    String idEstudianteStr = scanner.nextLine();
+                    int idEstudiante = convertirAEntero(idEstudianteStr);
+                    if (idEstudiante > 0) {
+                        servicioMatricula.obtenerMatriculasDelEstudiante(idEstudiante);
+                    } else {
+                        System.out.println("ERROR: ID inválido");
+                    }
+                    break;
+                case 5:
+                    servicioMatricula.cancelarMatricula();
                     break;
                 case 0:
                     volver = true;
@@ -349,6 +373,8 @@ public class MenuPrincipal {
     
     // Menu de consultas
     private void menuConsultas() {
+        ServicioMatricula servicioMatricula = new ServicioMatricula();
+        
         boolean volver = false;
         
         while (!volver) {
@@ -358,6 +384,7 @@ public class MenuPrincipal {
             System.out.println("====================================================");
             System.out.println("1. Ver estudiantes por curso");
             System.out.println("2. Ver cursos por estudiante");
+            System.out.println("3. Buscar matrícula");
             System.out.println("0. Volver al menu principal");
             System.out.println("====================================================");
             System.out.print("Seleccione una opcion: ");
@@ -372,12 +399,34 @@ public class MenuPrincipal {
             
             switch (opcion) {
                 case 1:
-                    System.out.println("\n[Placeholder: Julian]");
-                    // consultar estudiantes por curso
+                    System.out.print("Ingrese ID del curso: ");
+                    String idCursoStr = scanner.nextLine();
+                    int idCurso = convertirAEntero(idCursoStr);
+                    if (idCurso > 0) {
+                        servicioMatricula.obtenerEstudiantesDelCurso(idCurso);
+                    } else {
+                        System.out.println("ERROR: ID inválido");
+                    }
                     break;
                 case 2:
-                    System.out.println("\n[Placeholder: Julian]");
-                    // consultar cursos por estudiante
+                    System.out.print("Ingrese ID del estudiante: ");
+                    String idEstudianteStr = scanner.nextLine();
+                    int idEstudiante = convertirAEntero(idEstudianteStr);
+                    if (idEstudiante > 0) {
+                        servicioMatricula.obtenerMatriculasDelEstudiante(idEstudiante);
+                    } else {
+                        System.out.println("ERROR: ID inválido");
+                    }
+                    break;
+                case 3:
+                    System.out.print("Ingrese ID de la matrícula: ");
+                    String idMatriculaStr = scanner.nextLine();
+                    int idMatricula = convertirAEntero(idMatriculaStr);
+                    if (idMatricula > 0) {
+                        servicioMatricula.buscar(idMatricula);
+                    } else {
+                        System.out.println("ERROR: ID inválido");
+                    }
                     break;
                 case 0:
                     volver = true;

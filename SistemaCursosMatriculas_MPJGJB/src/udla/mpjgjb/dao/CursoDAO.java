@@ -7,13 +7,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO para la gestión de cursos en la base de datos
+ * Conceptos POO: Encapsulamiento, Integración Java-MySQL
+ * @author Mateo
+ */
 public class CursoDAO {
     
     // Registra un nuevo curso en la base de datos
     public boolean registrarCurso(Curso curso) {
-        String sql = "INSERT INTO curso (nombre, descripcion, cupos_totales, cupos_disponibles, docente_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO curso (nombre, descripcion, cupo_maximo, cupos_disponibles, id_docente) VALUES (?, ?, ?, ?, ?)";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, curso.getNombre());
@@ -41,19 +46,19 @@ public class CursoDAO {
         List<Curso> cursos = new ArrayList<>();
         String sql = "SELECT * FROM curso";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             
             while (rs.next()) {
                 Curso curso = new Curso();
-                curso.setId(rs.getInt("id"));
+                curso.setId(rs.getInt("id_curso"));
                 curso.setNombre(rs.getString("nombre"));
                 curso.setDescripcion(rs.getString("descripcion"));
-                curso.setCuposTotales(rs.getInt("cupos_totales"));
+                curso.setCuposTotales(rs.getInt("cupo_maximo"));
                 curso.setCuposDisponibles(rs.getInt("cupos_disponibles"));
                 
-                int docenteId = rs.getInt("docente_id");
+                int docenteId = rs.getInt("id_docente");
                 if (!rs.wasNull()) {
                     curso.setDocenteId(docenteId);
                 }
@@ -70,9 +75,9 @@ public class CursoDAO {
     
     // Busca un curso por su ID
     public Curso buscarCursoPorId(int id) {
-        String sql = "SELECT * FROM curso WHERE id = ?";
+        String sql = "SELECT * FROM curso WHERE id_curso = ?";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, id);
@@ -80,13 +85,13 @@ public class CursoDAO {
             
             if (rs.next()) {
                 Curso curso = new Curso();
-                curso.setId(rs.getInt("id"));
+                curso.setId(rs.getInt("id_curso"));
                 curso.setNombre(rs.getString("nombre"));
                 curso.setDescripcion(rs.getString("descripcion"));
-                curso.setCuposTotales(rs.getInt("cupos_totales"));
+                curso.setCuposTotales(rs.getInt("cupo_maximo"));
                 curso.setCuposDisponibles(rs.getInt("cupos_disponibles"));
                 
-                int docenteId = rs.getInt("docente_id");
+                int docenteId = rs.getInt("id_docente");
                 if (!rs.wasNull()) {
                     curso.setDocenteId(docenteId);
                 }
@@ -103,9 +108,9 @@ public class CursoDAO {
     
     // Asigna un docente a un curso
     public boolean asignarDocente(int cursoId, int docenteId) {
-        String sql = "UPDATE curso SET docente_id = ? WHERE id = ?";
+        String sql = "UPDATE curso SET id_docente = ? WHERE id_curso = ?";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, docenteId);
@@ -122,9 +127,9 @@ public class CursoDAO {
     
     // Actualiza los cupos disponibles de un curso
     public boolean actualizarCupos(int cursoId, int cuposDisponibles) {
-        String sql = "UPDATE curso SET cupos_disponibles = ? WHERE id = ?";
+        String sql = "UPDATE curso SET cupos_disponibles = ? WHERE id_curso = ?";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, cuposDisponibles);
@@ -141,9 +146,9 @@ public class CursoDAO {
     
     // Reduce un cupo disponible de un curso
     public boolean reducirCupo(int cursoId) {
-        String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles - 1 WHERE id = ? AND cupos_disponibles > 0";
+        String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles - 1 WHERE id_curso = ? AND cupos_disponibles > 0";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, cursoId);
@@ -159,9 +164,9 @@ public class CursoDAO {
     
     // Aumenta un cupo disponible de un curso
     public boolean aumentarCupo(int cursoId) {
-        String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles + 1 WHERE id = ? AND cupos_disponibles < cupos_totales";
+        String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles + 1 WHERE id_curso = ? AND cupos_disponibles < cupo_maximo";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, cursoId);
@@ -177,9 +182,9 @@ public class CursoDAO {
     
     // Verifica si un curso tiene cupos disponibles
     public boolean hayCuposDisponibles(int cursoId) {
-        String sql = "SELECT cupos_disponibles FROM curso WHERE id = ?";
+        String sql = "SELECT cupos_disponibles FROM curso WHERE id_curso = ?";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, cursoId);
@@ -198,9 +203,9 @@ public class CursoDAO {
     
     // Actualiza la informacion de un curso
     public boolean actualizarCurso(Curso curso) {
-        String sql = "UPDATE curso SET nombre = ?, descripcion = ?, cupos_totales = ? WHERE id = ?";
+        String sql = "UPDATE curso SET nombre = ?, descripcion = ?, cupo_maximo = ? WHERE id_curso = ?";
         
-        try (Connection conn = ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, curso.getNombre());
