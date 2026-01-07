@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /**
  * Clase ConexionDB
  * Gestiona la conexión a la base de datos MySQL
- * Conceptos POO: Encapsulamiento, Patrón Singleton
+ * Conceptos POO: Encapsulamiento
  * @author Julián
  */
 public class ConexionDB {
@@ -23,26 +23,8 @@ public class ConexionDB {
      * @throws SQLException Si hay error en la conexión
      */
     public static Connection getConexion() throws SQLException {
-        try {
-            // Cargar el driver JDBC de MySQL
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (ClassNotFoundException e) {
-            throw new SQLException("Driver de MySQL no encontrado: " + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Verifica si la conexión a la base de datos es válida
-     * @return true si la conexión es válida, false en caso contrario
-     */
-    public static boolean verificarConexion() {
-        try (Connection conn = getConexion()) {
-            return conn.isValid(2); // Timeout de 2 segundos
-        } catch (SQLException e) {
-            System.err.println("Error al verificar conexión: " + e.getMessage());
-            return false;
-        }
+        // JDBC 4+ registra automáticamente el driver si está en el classpath
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
 

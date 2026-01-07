@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PrograIII_SistemaCursosMatriculas_JGJBMP.iml" filepath="$PROJECT_DIR$/PrograIII_SistemaCursosMatriculas_JGJBMP.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SistemaCursosMatriculas_MPJGJB/SistemaCursosMatriculas_MPJGJB.iml" filepath="$PROJECT_DIR$/SistemaCursosMatriculas_MPJGJB/SistemaCursosMatriculas_MPJGJB.iml" />
     </modules>
   </component>
 </project>
