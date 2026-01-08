@@ -13,7 +13,7 @@ public class ConexionDB {
     // Configuración de la conexión a MySQL
     private static final String URL = "jdbc:mysql://localhost:3306/cursos_db?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";        // Cambiar según la configuración de sus compus
-    private static final String PASSWORD = "";        // Cambiar según la contraseña local
+    private static final String PASSWORD = "Pipo_41012";        // Cambiar según la contraseña local
 
     
     public static Connection getConexion() throws SQLException {
