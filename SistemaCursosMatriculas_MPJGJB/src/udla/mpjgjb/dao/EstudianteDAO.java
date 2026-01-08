@@ -58,25 +58,51 @@ public class EstudianteDAO {
     // Busca un estudiante por su ID
     public Estudiante buscarEstudiantePorId(int id) {
         String sql = "SELECT * FROM estudiante WHERE id_estudiante = ?";
-
         try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return new Estudiante(
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Estudiante(
                         rs.getInt("id_estudiante"),
                         rs.getString("nombre"),
                         rs.getString("cedula"),
                         rs.getString("email")
-                );
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
+    }
+
+    // Actualiza un estudiante existente
+    public boolean actualizarEstudiante(Estudiante estudiante) {
+        String sql = "UPDATE estudiante SET nombre = ?, cedula = ?, email = ? WHERE id_estudiante = ?";
+        try (Connection conn = ConexionDB.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, estudiante.getNombre());
+            pstmt.setString(2, estudiante.getCedula());
+            pstmt.setString(3, estudiante.getEmail());
+            pstmt.setInt(4, estudiante.getId());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Elimina un estudiante por su ID
+    public boolean eliminarEstudiante(int id) {
+        String sql = "DELETE FROM estudiante WHERE id_estudiante = ?";
+        try (Connection conn = ConexionDB.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
