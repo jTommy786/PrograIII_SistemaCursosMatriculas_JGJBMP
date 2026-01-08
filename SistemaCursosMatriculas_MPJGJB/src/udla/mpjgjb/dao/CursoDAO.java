@@ -221,4 +221,17 @@ public class CursoDAO {
             return false;
         }
     }
+    
+    // Elimina un curso por su ID
+    public boolean eliminarCurso(int id) {
+        String sql = "DELETE FROM curso WHERE id_curso = ?";
+        try (Connection conn = ConexionDB.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
