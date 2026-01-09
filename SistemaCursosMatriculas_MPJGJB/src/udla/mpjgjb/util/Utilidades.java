@@ -12,11 +12,19 @@ public class Utilidades {
     /**
      * Convierte un texto a numero entero.
      * Si el texto no es valido, devuelve -1.
+     * Solo acepta numeros positivos.
      * Ejemplo: "123" se convierte en 123.
      */
     public static int convertirAEntero(String texto) {
         // Verificar que el texto no sea null o vacío
         if (texto == null || texto.isEmpty()) {
+            return -1;
+        }
+        
+        // Limpiar espacios
+        texto = texto.trim();
+        
+        if (texto.isEmpty()) {
             return -1;
         }
         
@@ -30,7 +38,14 @@ public class Utilidades {
         // Convertir a número
         int resultado = 0;
         for (int i = 0; i < texto.length(); i++) {
-            resultado = resultado * 10 + (texto.charAt(i) - '0');
+            int digito = texto.charAt(i) - '0';
+            
+            // Verificar overflow (número demasiado grande)
+            if (resultado > (Integer.MAX_VALUE - digito) / 10) {
+                return -1;
+            }
+            
+            resultado = resultado * 10 + digito;
         }
         
         return resultado;
@@ -119,19 +134,53 @@ public class Utilidades {
     
     /**
      * Valida que el email tenga formato basico.
-     * Solo verifica que tenga @ y punto.
+     * Verifica que tenga @ y punto despues del @.
      */
     public static boolean validarEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
             return false;
         }
-        return email.contains("@") && email.contains(".");
+        
+        // Verificar que tenga @
+        if (!email.contains("@")) {
+            return false;
+        }
+        
+        // Verificar que haya algo antes y despues del @
+        int posicionArroba = email.indexOf("@");
+        if (posicionArroba == 0 || posicionArroba == email.length() - 1) {
+            return false;
+        }
+        
+        // Verificar que haya punto despues del @
+        String despuesArroba = email.substring(posicionArroba);
+        if (!despuesArroba.contains(".")) {
+            return false;
+        }
+        
+        // Verificar que el punto no sea inmediatamente despues del @
+        if (email.indexOf(".", posicionArroba) == posicionArroba + 1) {
+            return false;
+        }
+        
+        return true;
     }
     
     /**
-     * Valida que una cedula tenga exactamente 10 caracteres.
+     * Valida que una cedula tenga exactamente 10 digitos numericos.
      */
     public static boolean validarCedula(String cedula) {
-        return cedula != null && cedula.length() == 10;
+        if (cedula == null || cedula.length() != 10) {
+            return false;
+        }
+        
+        // Verificar que todos los caracteres sean digitos
+        for (int i = 0; i < cedula.length(); i++) {
+            if (cedula.charAt(i) < '0' || cedula.charAt(i) > '9') {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

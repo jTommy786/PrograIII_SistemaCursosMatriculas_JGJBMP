@@ -7,6 +7,7 @@ import udla.mpjgjb.modelo.Matricula;
 import udla.mpjgjb.modelo.Estudiante;
 import udla.mpjgjb.modelo.Curso;
 import udla.mpjgjb.util.Utilidades;
+import udla.mpjgjb.util.SelectorPaginado;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,13 +39,18 @@ public class ServicioMatricula implements GestionAcademica {
     public void registrar() {
         Utilidades.imprimirTitulo("REGISTRAR NUEVA MATRICULA", 80);
         
-        // Obtener ID del estudiante
-        System.out.print("ID del estudiante: ");
-        String idEstudianteStr = scanner.nextLine();
-        int idEstudiante = Utilidades.convertirAEntero(idEstudianteStr);
+        // Seleccionar estudiante con tabla paginada
+        List<Estudiante> estudiantes = estudianteDAO.listarEstudiantes();
+        if (estudiantes.isEmpty()) {
+            System.out.println("ERROR: No hay estudiantes registrados en el sistema");
+            return;
+        }
         
-        if (idEstudiante <= 0) {
-            System.out.println("ERROR: ID de estudiante invalido");
+        SelectorPaginado selector = new SelectorPaginado(scanner);
+        int idEstudiante = selector.seleccionarEstudiante(estudiantes);
+        
+        if (idEstudiante == -1) {
+            System.out.println("Operacion cancelada.");
             return;
         }
         
@@ -56,13 +62,17 @@ public class ServicioMatricula implements GestionAcademica {
         }
         System.out.println("[OK] Estudiante: " + estudiante.getNombre());
         
-        // Obtener ID del curso
-        System.out.print("ID del curso: ");
-        String idCursoStr = scanner.nextLine();
-        int idCurso = Utilidades.convertirAEntero(idCursoStr);
+        // Seleccionar curso con tabla paginada
+        List<Curso> cursos = cursoDAO.listarCursos();
+        if (cursos.isEmpty()) {
+            System.out.println("ERROR: No hay cursos registrados en el sistema");
+            return;
+        }
         
-        if (idCurso <= 0) {
-            System.out.println("ERROR: ID de curso invalido");
+        int idCurso = selector.seleccionarCurso(cursos);
+        
+        if (idCurso == -1) {
+            System.out.println("Operacion cancelada.");
             return;
         }
         
@@ -307,8 +317,36 @@ public class ServicioMatricula implements GestionAcademica {
             return;
         }
         
+        // Buscar la matrícula antes de cancelar
+        Matricula matricula = matriculaDAO.buscarMatriculaPorId(id);
+        if (matricula == null) {
+            System.out.println("ERROR: Matricula no encontrada");
+            return;
+        }
+        
+        // Obtener información del estudiante y curso
+        Estudiante estudiante = estudianteDAO.buscarEstudiantePorId(matricula.getIdEstudiante());
+        Curso curso = cursoDAO.buscarCursoPorId(matricula.getIdCurso());
+        
+        // Mostrar información de la matrícula
+        System.out.println("\nInformacion de la matricula:");
+        System.out.println("  ID Matricula: " + matricula.getId());
+        System.out.println("  Estudiante:   " + (estudiante != null ? estudiante.getNombre() : "No encontrado"));
+        System.out.println("  Curso:        " + (curso != null ? curso.getNombre() : "No encontrado"));
+        System.out.println("  Fecha:        " + matricula.getFecha());
+        
+        // Confirmar cancelación
+        System.out.print("\n¿Esta seguro que desea cancelar esta matricula? (S/N): ");
+        String confirmacion = scanner.nextLine().trim().toUpperCase();
+        
+        if (!confirmacion.equals("S")) {
+            System.out.println("Operacion cancelada.");
+            return;
+        }
+        
         if (matriculaDAO.cancelarMatricula(id)) {
             System.out.println("\n*** Matricula cancelada exitosamente ***");
+            System.out.println("El cupo ha sido devuelto al curso.");
         } else {
             System.out.println("ERROR: No se pudo cancelar la matricula");
         }

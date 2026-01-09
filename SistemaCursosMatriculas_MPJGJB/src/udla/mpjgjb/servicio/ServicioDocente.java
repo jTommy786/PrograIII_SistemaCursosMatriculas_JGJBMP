@@ -64,7 +64,6 @@ public class ServicioDocente implements GestionAcademica {
         
         if (docentes.isEmpty()) {
             System.out.println("\nNo hay docentes registrados.");
-            System.out.println("\nNo hay docentes registrados.");
             return;
         }
         
@@ -125,10 +124,7 @@ public class ServicioDocente implements GestionAcademica {
         }
         
         Utilidades.imprimirTitulo("ACTUALIZAR DOCENTE", 80);
-        Utilidades.imprimirTitulo("ACTUALIZAR DOCENTE", 80);
         System.out.println("Docente actual: " + docente.getNombre());
-        System.out.println("(Presione Enter para mantener el valor actual)");
-        Utilidades.imprimirLinea(80, '-');
         System.out.println("(Presione Enter para mantener el valor actual)");
         Utilidades.imprimirLinea(80, '-');
         

@@ -64,10 +64,11 @@ public class EstudianteDAO {
     public Estudiante buscarEstudiantePorId(int id) {
         String sql = "SELECT * FROM estudiante WHERE id_estudiante = ?";
         try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            
             if (rs.next()) {
                 return new Estudiante(
                     rs.getInt("id_estudiante"),
