@@ -135,7 +135,6 @@ public class ServicioCurso implements GestionAcademica {
         System.out.print("Nueva descripcion: ");
         String descripcion = scanner.nextLine();
         if (Utilidades.validarTextoNoVacio(descripcion)) {
-        if (Utilidades.validarTextoNoVacio(descripcion)) {
             curso.setDescripcion(descripcion);
         }
         
@@ -151,7 +150,6 @@ public class ServicioCurso implements GestionAcademica {
             int cuposOcupados = curso.getCuposTotales() - curso.getCuposDisponibles();
             if (cuposTotales >= cuposOcupados) {
                 curso.setCuposTotales(cuposTotales);
-                curso.setCuposDisponibles(cuposTotales - cuposOcupados);
                 curso.setCuposDisponibles(cuposTotales - cuposOcupados);
             } else {
                 System.out.println("ERROR: Los cupos totales (" + cuposTotales + 
@@ -191,31 +189,6 @@ public class ServicioCurso implements GestionAcademica {
             return;
         }
         
-        Utilidades.imprimirTitulo("CUPOS DISPONIBLES POR CURSO", 80);
-        
-        int[] anchos = {5, 30, 12, 10, 12};
-        
-        Utilidades.imprimirSeparador(anchos);
-        
-        String[] encabezado = {"ID", "CURSO", "DISPONIBLES", "OCUPADOS", "TOTALES"};
-        Utilidades.imprimirFila(encabezado, anchos);
-        
-        Utilidades.imprimirSeparador(anchos);
-        
-        for (Curso curso : cursos) {
-            int ocupados = curso.getCuposTotales() - curso.getCuposDisponibles();
-            
-            String[] fila = {
-                String.valueOf(curso.getId()),
-                curso.getNombre(),
-                String.valueOf(curso.getCuposDisponibles()),
-                String.valueOf(ocupados),
-                String.valueOf(curso.getCuposTotales())
-            };
-            Utilidades.imprimirFila(fila, anchos);
-        }
-        
-        Utilidades.imprimirSeparador(anchos);
         Utilidades.imprimirTitulo("CUPOS DISPONIBLES POR CURSO", 80);
         
         int[] anchos = {5, 30, 12, 10, 12};

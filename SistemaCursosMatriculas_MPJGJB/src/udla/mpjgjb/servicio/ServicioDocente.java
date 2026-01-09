@@ -110,7 +110,6 @@ public class ServicioDocente implements GestionAcademica {
             System.out.println("Cedula:       " + docente.getCedula());
             System.out.println("Especialidad: " + docente.getEspecialidad());
             Utilidades.imprimirLinea(80, '=');
-            return true;
         } else {
             System.out.println("ERROR: Docente no encontrado");
         }

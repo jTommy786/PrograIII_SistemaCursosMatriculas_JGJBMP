@@ -252,9 +252,10 @@ public class MatriculaDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idCurso);
-            int filasAfectadas = pstmt.executeUpdate();
+            pstmt.executeUpdate();
 
-        } catch (SQLException _) {
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
