@@ -41,6 +41,9 @@ public abstract class Persona {
         this.cedula = cedula;
     }
 
-    // Metodo abstracto para obtener informacion
+    /**
+     * Metodo abstracto que debe ser implementado por las clases hijas.
+     * Devuelve un texto con la informacion de la persona.
+     */
     public abstract String obtenerInformacion();
 }

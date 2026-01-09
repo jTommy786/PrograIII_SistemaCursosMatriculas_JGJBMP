@@ -4,35 +4,28 @@ import udla.mpjgjb.modelo.Matricula;
 import udla.mpjgjb.util.ConexionDB;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO para la gestión de matrículas en la base de datos
- * Responsable de: persistencia, validación de cupos y evitar duplicados
- * Conceptos POO: Encapsulamiento, Integración Java-MySQL
- * @author Julián
+ * DAO para gestionar matriculas en la base de datos.
+ * Maneja la inscripcion de estudiantes en cursos.
+ * Valida cupos disponibles y evita inscripciones duplicadas.
  */
 public class MatriculaDAO {
 
     /**
-     * Registra una nueva matrícula en la base de datos
-     * Valida que el estudiante exista, el curso exista y tenga cupos disponibles
-     * Evita matrículas duplicadas
-     * @param matricula Objeto Matricula a registrar
-     * @return true si se registró exitosamente, false en caso contrario
+     * Registra una nueva matricula en la base de datos.
+     * Primero valida que el estudiante no este ya inscrito en el curso.
+     * Luego verifica que haya cupos disponibles.
+     * Si todo esta bien, registra la matricula y reduce los cupos disponibles.
      */
     public boolean registrarMatricula(Matricula matricula) {
-        // Validar que el estudiante no esté ya matriculado en este curso
         if (existeMatricula(matricula.getIdEstudiante(), matricula.getIdCurso())) {
-            System.out.println("ERROR: El estudiante ya está matriculado en este curso");
             return false;
         }
 
-        // Validar que hay cupos disponibles
         if (!hayCuposDisponibles(matricula.getIdCurso())) {
-            System.out.println("ERROR: No hay cupos disponibles en este curso");
             return false;
         }
 
@@ -48,21 +41,19 @@ public class MatriculaDAO {
             int filasAfectadas = pstmt.executeUpdate();
             
             if (filasAfectadas > 0) {
-                // Reducir cupo disponible del curso
                 reducirCupoDelCurso(matricula.getIdCurso());
                 return true;
             }
             return false;
 
         } catch (SQLException e) {
-            System.err.println("Error al registrar matrícula: " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Lista todas las matrículas registradas en la base de datos
-     * @return Lista de matrículas
+     * Lista todas las matriculas registradas en el sistema.
+     * Devuelve una lista con todas las inscripciones.
      */
     public List<Matricula> listarMatriculas() {
         List<Matricula> matriculas = new ArrayList<>();
@@ -83,16 +74,15 @@ public class MatriculaDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al listar matrículas: " + e.getMessage());
+            // Si hay error, devuelve lista vacia
         }
 
         return matriculas;
     }
 
     /**
-     * Busca una matrícula por su ID
-     * @param id ID de la matrícula
-     * @return Objeto Matricula si existe, null en caso contrario
+     * Busca una matricula especifica usando su ID.
+     * Devuelve la matricula si existe, null si no se encuentra.
      */
     public Matricula buscarMatriculaPorId(int id) {
         String sql = "SELECT * FROM matricula WHERE id_matricula = ?";
@@ -113,16 +103,15 @@ public class MatriculaDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al buscar matrícula: " + e.getMessage());
+            // Si hay error, devuelve null
         }
 
         return null;
     }
 
     /**
-     * Obtiene todas las matrículas de un estudiante específico
-     * @param idEstudiante ID del estudiante
-     * @return Lista de matrículas del estudiante
+     * Obtiene todos los cursos en los que esta inscrito un estudiante.
+     * Devuelve una lista con todas las matriculas del estudiante.
      */
     public List<Matricula> obtenerMatriculasDelEstudiante(int idEstudiante) {
         List<Matricula> matriculas = new ArrayList<>();
@@ -145,7 +134,7 @@ public class MatriculaDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al obtener matrículas del estudiante: " + e.getMessage());
+            // Si hay error, devuelve lista vacia
         }
 
         return matriculas;
@@ -177,17 +166,16 @@ public class MatriculaDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al obtener matrículas del curso: " + e.getMessage());
+            // Si hay error, devuelve lista vacia
         }
 
         return matriculas;
     }
 
     /**
-     * Verifica si un estudiante ya está matriculado en un curso (evita duplicados)
-     * @param idEstudiante ID del estudiante
-     * @param idCurso ID del curso
-     * @return true si ya existe la matrícula, false en caso contrario
+     * Verifica si un estudiante ya esta inscrito en un curso.
+     * Esto evita que un estudiante se inscriba dos veces en el mismo curso.
+     * Devuelve true si ya existe, false si no.
      */
     public boolean existeMatricula(int idEstudiante, int idCurso) {
         String sql = "SELECT COUNT(*) FROM matricula WHERE id_estudiante = ? AND id_curso = ?";
@@ -204,16 +192,15 @@ public class MatriculaDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al verificar matrícula duplicada: " + e.getMessage());
+            // Si hay error, devuelve false
         }
 
         return false;
     }
 
     /**
-     * Verifica si un curso tiene cupos disponibles
-     * @param idCurso ID del curso
-     * @return true si hay cupos disponibles, false en caso contrario
+     * Verifica si un curso tiene cupos libres para mas estudiantes.
+     * Devuelve true si hay cupos, false si esta lleno.
      */
     public boolean hayCuposDisponibles(int idCurso) {
         String sql = "SELECT cupos_disponibles FROM curso WHERE id_curso = ?";
@@ -229,16 +216,15 @@ public class MatriculaDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al verificar cupos disponibles: " + e.getMessage());
+            // Si hay error, devuelve false
         }
 
         return false;
     }
 
     /**
-     * Reduce en uno los cupos disponibles de un curso
-     * @param idCurso ID del curso
-     * @return true si se actualizó exitosamente, false en caso contrario
+     * Reduce en 1 los cupos disponibles cuando un estudiante se inscribe.
+     * Solo reduce si hay cupos disponibles mayores a 0.
      */
     private boolean reducirCupoDelCurso(int idCurso) {
         String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles - 1 WHERE id_curso = ? AND cupos_disponibles > 0";
@@ -251,30 +237,24 @@ public class MatriculaDAO {
             return filasAfectadas > 0;
 
         } catch (SQLException e) {
-            System.err.println("Error al reducir cupo del curso: " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Aumenta en uno los cupos disponibles de un curso
-     * Se utiliza cuando se cancela una matrícula
-     * @param idCurso ID del curso
-     * @return true si se actualizó exitosamente, false en caso contrario
+     * Aumenta en 1 los cupos disponibles cuando se cancela una matricula.
+     * Esto devuelve el cupo para que otro estudiante pueda inscribirse.
      */
-    private boolean aumentarCupoDelCurso(int idCurso) {
-        String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles + 1 WHERE id_curso = ? AND cupos_disponibles < cupos_maximo";
+    private void aumentarCupoDelCurso(int idCurso) {
+        String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles + 1 WHERE id_curso = ? AND cupos_disponibles < cupo_maximo";
 
         try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idCurso);
             int filasAfectadas = pstmt.executeUpdate();
-            return filasAfectadas > 0;
 
-        } catch (SQLException e) {
-            System.err.println("Error al aumentar cupo del curso: " + e.getMessage());
-            return false;
+        } catch (SQLException _) {
         }
     }
 
@@ -284,10 +264,8 @@ public class MatriculaDAO {
      * @return true si se canceló exitosamente, false en caso contrario
      */
     public boolean cancelarMatricula(int idMatricula) {
-        // Primero obtenemos el ID del curso para liberar el cupo
         Matricula matricula = buscarMatriculaPorId(idMatricula);
         if (matricula == null) {
-            System.out.println("ERROR: Matrícula no encontrada");
             return false;
         }
 
@@ -300,22 +278,20 @@ public class MatriculaDAO {
             int filasAfectadas = pstmt.executeUpdate();
 
             if (filasAfectadas > 0) {
-                // Liberar el cupo del curso
                 aumentarCupoDelCurso(matricula.getIdCurso());
                 return true;
             }
             return false;
 
         } catch (SQLException e) {
-            System.err.println("Error al cancelar matrícula: " + e.getMessage());
             return false;
         }
     }
 
     /**
      * Obtiene el número total de estudiantes matriculados en un curso
-     * @param idCurso ID del curso
-     * @return Número de estudiantes matriculados
+     * ID del curso
+     * Retorna el número de estudiantes matriculados
      */
     public int obtenerCantidadEstudiantesEnCurso(int idCurso) {
         String sql = "SELECT COUNT(*) FROM matricula WHERE id_curso = ?";
@@ -331,7 +307,7 @@ public class MatriculaDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al obtener cantidad de estudiantes: " + e.getMessage());
+            // Si hay error, devuelve 0
         }
 
         return 0;

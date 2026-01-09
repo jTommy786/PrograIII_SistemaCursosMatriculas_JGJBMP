@@ -5,8 +5,13 @@ import udla.mpjgjb.servicio.ServicioMatricula;
 import udla.mpjgjb.servicio.ServicioCurso;
 import udla.mpjgjb.servicio.ServicioEstudiante;
 import udla.mpjgjb.servicio.ServicioDocente;
-import udla.mpjgjb.dao.EstudianteDAO;
+import udla.mpjgjb.util.Utilidades;
 
+/**
+ * Clase MenuPrincipal
+ * Interfaz de usuario para el sistema de gestión de cursos y matrículas
+ * Proporciona menús interactivos para todas las funcionalidades del sistema
+ */
 public class MenuPrincipal {
     
     private Scanner scanner;
@@ -28,7 +33,7 @@ public class MenuPrincipal {
                 continue;
             }
             
-            int opcion = convertirAEntero(entrada);
+            int opcion = Utilidades.convertirAEntero(entrada);
             
             if (opcion == -1) {
                 System.out.println("\nError: Ingrese un numero valido.");
@@ -55,35 +60,9 @@ public class MenuPrincipal {
         }
     }
     
-    // Convierte un String a entero 
-    private int convertirAEntero(String texto) {
-        if (texto == null) {
-            return -1;
-        }
-        
-        if (texto.length() == 0) {
-            return -1;
-        }
-        
-        // Verificar si todos los caracteres son digitos
-        for (int i = 0; i < texto.length(); i++) {
-            if (texto.toCharArray()[i] < '0' || texto.toCharArray()[i] > '9') {
-                return -1;
-            }
-        }
-        
-        // Convertir a numero
-        int resultado = 0;
-        for (int i = 0; i < texto.length(); i++) {
-            resultado = resultado * 10 + (texto.toCharArray()[i] - '0');
-        }
-        
-        return resultado;
-    }
-    
     // Muestra el menu principal
     private void mostrarMenuPrincipal() {
-        System.out.println("");
+        System.out.println();
         System.out.println("====================================================");
         System.out.println("   SISTEMA DE GESTION DE CURSOS Y MATRICULAS");
         System.out.println("====================================================");
@@ -95,12 +74,11 @@ public class MenuPrincipal {
         System.out.print("Seleccione una opcion: ");
     }
     
-    // Menu de gestion (submenu)
     private void menuGestion() {
         boolean volver = false;
         
         while (!volver) {
-            System.out.println("");
+            System.out.println();
             System.out.println("====================================================");
             System.out.println("                  --- Gestion ---");
             System.out.println("====================================================");
@@ -112,7 +90,7 @@ public class MenuPrincipal {
             System.out.print("Seleccione una opcion: ");
             
             String entrada = scanner.nextLine();
-            int opcion = convertirAEntero(entrada);
+            int opcion = Utilidades.convertirAEntero(entrada);
             
             if (opcion == -1) {
                 System.out.println("\nError: Ingrese un numero valido.");
@@ -138,13 +116,12 @@ public class MenuPrincipal {
         }
     }
     
-    // Menu de gestion de estudiantes
     private void menuEstudiantes() {
         ServicioEstudiante servicioEstudiante = new ServicioEstudiante();
         boolean volver = false;
         
         while (!volver) {
-            System.out.println("");
+            System.out.println();
             System.out.println("====================================================");
             System.out.println("         --- Gestion de Estudiantes ---");
             System.out.println("====================================================");
@@ -157,7 +134,7 @@ public class MenuPrincipal {
             System.out.print("Seleccione una opcion: ");
             
             String entrada = scanner.nextLine();
-            int opcion = convertirAEntero(entrada);
+            int opcion = Utilidades.convertirAEntero(entrada);
             
             if (opcion == -1) {
                 System.out.println("\nError: Ingrese un numero valido.");
@@ -174,21 +151,21 @@ public class MenuPrincipal {
                 case 3:
                     System.out.print("Ingrese ID del estudiante: ");
                     String idEstudianteStr = scanner.nextLine();
-                    int idEstudiante = convertirAEntero(idEstudianteStr);
+                    int idEstudiante = Utilidades.convertirAEntero(idEstudianteStr);
                     if (idEstudiante > 0) {
                         servicioEstudiante.buscar(idEstudiante);
                     } else {
-                        System.out.println("ERROR: ID inválido");
+                        System.out.println("ERROR: ID invalido");
                     }
                     break;
                 case 4:
                     System.out.print("Ingrese ID del estudiante a actualizar: ");
                     String idActStr = scanner.nextLine();
-                    int idAct = convertirAEntero(idActStr);
+                    int idAct = Utilidades.convertirAEntero(idActStr);
                     if (idAct > 0) {
                         servicioEstudiante.actualizar(idAct);
                     } else {
-                        System.out.println("ERROR: ID inválido");
+                        System.out.println("ERROR: ID invalido");
                     }
                     break;
                 case 0:
@@ -206,19 +183,20 @@ public class MenuPrincipal {
         boolean volver = false;
         
         while (!volver) {
-            System.out.println("");
+            System.out.println();
             System.out.println("====================================================");
             System.out.println("           --- Gestion de Docentes ---");
             System.out.println("====================================================");
             System.out.println("1. Registrar docente");
             System.out.println("2. Listar docentes");
             System.out.println("3. Buscar docente");
+            System.out.println("4. Actualizar docente");
             System.out.println("0. Volver al menu principal");
             System.out.println("====================================================");
             System.out.print("Seleccione una opcion: ");
             
             String entrada = scanner.nextLine();
-            int opcion = convertirAEntero(entrada);
+            int opcion = Utilidades.convertirAEntero(entrada);
             
             if (opcion == -1) {
                 System.out.println("\nError: Ingrese un numero valido.");
@@ -235,11 +213,21 @@ public class MenuPrincipal {
                 case 3:
                     System.out.print("Ingrese ID del docente: ");
                     String idDocenteStr = scanner.nextLine();
-                    int idDocente = convertirAEntero(idDocenteStr);
+                    int idDocente = Utilidades.convertirAEntero(idDocenteStr);
                     if (idDocente > 0) {
                         servicioDocente.buscar(idDocente);
                     } else {
-                        System.out.println("ERROR: ID inválido");
+                        System.out.println("ERROR: ID invalido");
+                    }
+                    break;
+                case 4:
+                    System.out.print("Ingrese ID del docente a actualizar: ");
+                    String idActStr = scanner.nextLine();
+                    int idAct = Utilidades.convertirAEntero(idActStr);
+                    if (idAct > 0) {
+                        servicioDocente.actualizar(idAct);
+                    } else {
+                        System.out.println("ERROR: ID invalido");
                     }
                     break;
                 case 0:
@@ -251,14 +239,12 @@ public class MenuPrincipal {
         }
     }
     
-    // Menu de gestion de cursos
     private void menuCursos() {
         ServicioCurso servicioCurso = new ServicioCurso();
-        
         boolean volver = false;
         
         while (!volver) {
-            System.out.println("");
+            System.out.println();
             System.out.println("====================================================");
             System.out.println("            --- Gestion de Cursos ---");
             System.out.println("====================================================");
@@ -271,7 +257,7 @@ public class MenuPrincipal {
             System.out.print("Seleccione una opcion: ");
             
             String entrada = scanner.nextLine();
-            int opcion = convertirAEntero(entrada);
+            int opcion = Utilidades.convertirAEntero(entrada);
             
             if (opcion == -1) {
                 System.out.println("\nError: Ingrese un numero valido.");
@@ -288,7 +274,7 @@ public class MenuPrincipal {
                 case 3:
                     System.out.print("ID del curso: ");
                     String inputCurso = scanner.nextLine();
-                    int cursoId = convertirAEntero(inputCurso);
+                    int cursoId = Utilidades.convertirAEntero(inputCurso);
                     
                     if (cursoId == -1) {
                         System.out.println("Error: ID de curso invalido.");
@@ -297,7 +283,7 @@ public class MenuPrincipal {
                     
                     System.out.print("ID del docente: ");
                     String inputDocente = scanner.nextLine();
-                    int docenteId = convertirAEntero(inputDocente);
+                    int docenteId = Utilidades.convertirAEntero(inputDocente);
                     
                     if (docenteId == -1) {
                         System.out.println("Error: ID de docente invalido.");
@@ -317,15 +303,12 @@ public class MenuPrincipal {
         }
     }
     
-    // Menu de matriculas
     private void menuMatriculas() {
         ServicioMatricula servicioMatricula = new ServicioMatricula();
-        EstudianteDAO estudianteDAO = new EstudianteDAO();
-        
         boolean volver = false;
         
         while (!volver) {
-            System.out.println("");
+            System.out.println();
             System.out.println("====================================================");
             System.out.println("              --- Matriculas ---");
             System.out.println("====================================================");
@@ -339,7 +322,7 @@ public class MenuPrincipal {
             System.out.print("Seleccione una opcion: ");
             
             String entrada = scanner.nextLine();
-            int opcion = convertirAEntero(entrada);
+            int opcion = Utilidades.convertirAEntero(entrada);
             
             if (opcion == -1) {
                 System.out.println("\nError: Ingrese un numero valido.");
@@ -356,23 +339,24 @@ public class MenuPrincipal {
                 case 3:
                     System.out.print("Ingrese ID del curso: ");
                     String idCursoStr = scanner.nextLine();
-                    int idCurso = convertirAEntero(idCursoStr);
+                    int idCurso = Utilidades.convertirAEntero(idCursoStr);
                     if (idCurso > 0) {
                         servicioMatricula.obtenerEstudiantesDelCurso(idCurso);
                     } else {
-                        System.out.println("ERROR: ID inválido");
+                        System.out.println("ERROR: ID invalido");
                     }
                     break;
                 case 4:
                     System.out.print("Ingrese ID del estudiante: ");
                     String idEstudianteStr = scanner.nextLine();
-                    int idEstudiante = convertirAEntero(idEstudianteStr);
+                    int idEstudiante = Utilidades.convertirAEntero(idEstudianteStr);
                     if (idEstudiante > 0) {
                         servicioMatricula.obtenerMatriculasDelEstudiante(idEstudiante);
                     } else {
-                        System.out.println("ERROR: ID inválido");
+                        System.out.println("ERROR: ID invalido");
                     }
                     break;
+
                 case 5:
                     servicioMatricula.cancelarMatricula();
                     break;
@@ -388,23 +372,22 @@ public class MenuPrincipal {
     // Menu de consultas
     private void menuConsultas() {
         ServicioMatricula servicioMatricula = new ServicioMatricula();
-        
         boolean volver = false;
         
         while (!volver) {
-            System.out.println("");
+            System.out.println();
             System.out.println("====================================================");
             System.out.println("               --- Consultas ---");
             System.out.println("====================================================");
             System.out.println("1. Ver estudiantes por curso");
             System.out.println("2. Ver cursos por estudiante");
-            System.out.println("3. Buscar matrícula");
+            System.out.println("3. Buscar matricula");
             System.out.println("0. Volver al menu principal");
             System.out.println("====================================================");
             System.out.print("Seleccione una opcion: ");
             
             String entrada = scanner.nextLine();
-            int opcion = convertirAEntero(entrada);
+            int opcion = Utilidades.convertirAEntero(entrada);
             
             if (opcion == -1) {
                 System.out.println("\nError: Ingrese un numero valido.");
@@ -415,31 +398,31 @@ public class MenuPrincipal {
                 case 1:
                     System.out.print("Ingrese ID del curso: ");
                     String idCursoStr = scanner.nextLine();
-                    int idCurso = convertirAEntero(idCursoStr);
+                    int idCurso = Utilidades.convertirAEntero(idCursoStr);
                     if (idCurso > 0) {
                         servicioMatricula.obtenerEstudiantesDelCurso(idCurso);
                     } else {
-                        System.out.println("ERROR: ID inválido");
+                        System.out.println("ERROR: ID invalido");
                     }
                     break;
                 case 2:
                     System.out.print("Ingrese ID del estudiante: ");
                     String idEstudianteStr = scanner.nextLine();
-                    int idEstudiante = convertirAEntero(idEstudianteStr);
+                    int idEstudiante = Utilidades.convertirAEntero(idEstudianteStr);
                     if (idEstudiante > 0) {
                         servicioMatricula.obtenerMatriculasDelEstudiante(idEstudiante);
                     } else {
-                        System.out.println("ERROR: ID inválido");
+                        System.out.println("ERROR: ID invalido");
                     }
                     break;
                 case 3:
-                    System.out.print("Ingrese ID de la matrícula: ");
+                    System.out.print("Ingrese ID de la matricula: ");
                     String idMatriculaStr = scanner.nextLine();
-                    int idMatricula = convertirAEntero(idMatriculaStr);
+                    int idMatricula = Utilidades.convertirAEntero(idMatriculaStr);
                     if (idMatricula > 0) {
                         servicioMatricula.buscar(idMatricula);
                     } else {
-                        System.out.println("ERROR: ID inválido");
+                        System.out.println("ERROR: ID invalido");
                     }
                     break;
                 case 0:
@@ -451,8 +434,7 @@ public class MenuPrincipal {
         }
     }
     
-    // Metodo main para iniciar el sistema
-    public static void main(String[] args) {
+    static void main() {
         MenuPrincipal menu = new MenuPrincipal();
         menu.iniciar();
     }

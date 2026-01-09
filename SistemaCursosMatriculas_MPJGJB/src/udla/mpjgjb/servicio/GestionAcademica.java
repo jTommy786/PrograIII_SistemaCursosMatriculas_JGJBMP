@@ -2,21 +2,28 @@ package udla.mpjgjb.servicio;
 
 /**
  * Interface GestionAcademica
- * Define las operaciones basicas para el sistema
- * Conceptos POO: Interfaces, Polimorfismo
- * @author Mateo
+ * Define las operaciones basicas que deben tener todos los servicios.
+ * Los servicios de Estudiante, Docente y Curso implementan esta interface.
  */
 public interface GestionAcademica {
     
-    // Registra un elemento en el sistema
-    boolean registrar();
+    /**
+     * Registra un elemento en el sistema.
+     */
+    void registrar();
     
-    // Lista todos los elementos del sistema
+    /**
+     * Lista todos los elementos del sistema.
+     */
     void listar();
     
-    // Busca un elemento por su ID
-    boolean buscar(int id);
+    /**
+     * Busca un elemento por su ID.
+     */
+    void buscar(int id);
     
-    // Actualiza la informacion de un elemento
-    boolean actualizar(int id);
+    /**
+     * Actualiza la informacion de un elemento.
+     */
+    void actualizar(int id);
 }

@@ -2,10 +2,15 @@ package udla.mpjgjb.servicio;
 
 import udla.mpjgjb.dao.DocenteDAO;
 import udla.mpjgjb.modelo.Docente;
+import udla.mpjgjb.util.Utilidades;
 
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Servicio para gestionar docentes
+ * Permite registrar, listar, buscar y actualizar docentes
+ */
 public class ServicioDocente implements GestionAcademica {
     
     private DocenteDAO docenteDAO;
@@ -16,140 +21,139 @@ public class ServicioDocente implements GestionAcademica {
         this.scanner = new Scanner(System.in);
     }
     
-    // Convierte un String a entero
-    private int convertirAEntero(String texto) {
-        if (texto == null) {
-            return -1;
-        }
-        
-        if (texto.length() == 0) {
-            return -1;
-        }
-        
-        // Verificar si todos los caracteres son digitos
-        for (int i = 0; i < texto.length(); i++) {
-            if (texto.toCharArray()[i] < '0' || texto.toCharArray()[i] > '9') {
-                return -1;
-            }
-        }
-        
-        // Convertir a numero
-        int resultado = 0;
-        for (int i = 0; i < texto.length(); i++) {
-            resultado = resultado * 10 + (texto.toCharArray()[i] - '0');
-        }
-        
-        return resultado;
-    }
-    
-    public boolean registrar() {
-        System.out.println("\n=== REGISTRAR NUEVO DOCENTE ===");
+    @Override
+    public void registrar() {
+        Utilidades.imprimirTitulo("REGISTRAR NUEVO DOCENTE", 80);
         
         System.out.print("Nombre del docente: ");
         String nombre = scanner.nextLine();
         
-        if (nombre.trim().isEmpty()) {
+        if (!Utilidades.validarTextoNoVacio(nombre)) {
             System.out.println("ERROR: El nombre no puede estar vacio");
-            return false;
+            return;
         }
         
-        System.out.print("Cedula: ");
+        System.out.print("Cedula (10 digitos): ");
         String cedula = scanner.nextLine();
         
-        if (cedula.trim().isEmpty()) {
-            System.out.println("ERROR: La cedula no puede estar vacia");
-            return false;
+        if (!Utilidades.validarCedula(cedula)) {
+            System.out.println("ERROR: La cedula debe tener 10 digitos");
+            return;
         }
         
         System.out.print("Especialidad: ");
         String especialidad = scanner.nextLine();
         
-        if (especialidad.trim().isEmpty()) {
+        if (!Utilidades.validarTextoNoVacio(especialidad)) {
             System.out.println("ERROR: La especialidad no puede estar vacia");
-            return false;
+            return;
         }
         
         Docente docente = new Docente(0, nombre, cedula, especialidad);
         
         if (docenteDAO.registrarDocente(docente)) {
-            System.out.println("Docente registrado exitosamente");
-            return true;
+            System.out.println("\n*** Docente registrado exitosamente ***");
         } else {
             System.out.println("ERROR: No se pudo registrar el docente");
-            return false;
         }
-    }
-    
-    public void listar() {
-        System.out.println("");
-        System.out.println("=== LISTADO DE DOCENTES ===");
-        List<Docente> docentes = docenteDAO.listarDocentes();
-        
-        if (docentes.isEmpty()) {
-            System.out.println("No hay docentes registrados.");
-            return;
-        }
-        
-        System.out.println("====================================================");
-        System.out.println("ID | NOMBRE | CEDULA | ESPECIALIDAD");
-        System.out.println("====================================================");
-        
-        for (int i = 0; i < docentes.size(); i++) {
-            Docente docente = docentes.get(i);
-            System.out.println(docente.getId() + " | " + docente.getNombre() + " | " + 
-                             docente.getCedula() + " | " + docente.getEspecialidad());
-        }
-        System.out.println("====================================================");
     }
     
     @Override
-    public boolean buscar(int id) {
+    public void listar() {
+        List<Docente> docentes = docenteDAO.listarDocentes();
+        
+        if (docentes.isEmpty()) {
+            System.out.println("\nNo hay docentes registrados.");
+            return;
+        }
+        
+        Utilidades.imprimirTitulo("LISTADO DE DOCENTES", 80);
+        
+        // Definir anchos de columnas
+        int[] anchos = {5, 25, 12, 30};
+        
+        // Imprimir separador superior
+        Utilidades.imprimirSeparador(anchos);
+        
+        // Imprimir encabezado
+        String[] encabezado = {"ID", "NOMBRE", "CEDULA", "ESPECIALIDAD"};
+        Utilidades.imprimirFila(encabezado, anchos);
+        
+        // Imprimir separador
+        Utilidades.imprimirSeparador(anchos);
+        
+        // Imprimir cada docente
+        for (Docente docente : docentes) {
+            String[] fila = {
+                String.valueOf(docente.getId()),
+                docente.getNombre(),
+                docente.getCedula(),
+                docente.getEspecialidad()
+            };
+            Utilidades.imprimirFila(fila, anchos);
+        }
+        
+        // Imprimir separador inferior
+        Utilidades.imprimirSeparador(anchos);
+        System.out.println("Total de docentes: " + docentes.size());
+    }
+    
+    @Override
+    public void buscar(int id) {
         Docente docente = docenteDAO.buscarDocentePorId(id);
         
         if (docente != null) {
-            System.out.println("\n=== INFORMACIÓN DEL DOCENTE ===");
-            System.out.println("ID: " + docente.getId());
-            System.out.println("Nombre: " + docente.getNombre());
-            System.out.println("Cedula: " + docente.getCedula());
+            Utilidades.imprimirTitulo("INFORMACION DEL DOCENTE", 80);
+            System.out.println("ID:           " + docente.getId());
+            System.out.println("Nombre:       " + docente.getNombre());
+            System.out.println("Cedula:       " + docente.getCedula());
             System.out.println("Especialidad: " + docente.getEspecialidad());
-            return true;
+            Utilidades.imprimirLinea(80, '=');
         } else {
             System.out.println("ERROR: Docente no encontrado");
-            return false;
         }
     }
     
-    public boolean actualizar(int id) {
+    @Override
+    public void actualizar(int id) {
         Docente docente = docenteDAO.buscarDocentePorId(id);
         
         if (docente == null) {
             System.out.println("ERROR: Docente no encontrado");
-            return false;
+            return;
         }
         
-        System.out.println("\n=== ACTUALIZAR DOCENTE ===");
+        Utilidades.imprimirTitulo("ACTUALIZAR DOCENTE", 80);
         System.out.println("Docente actual: " + docente.getNombre());
+        System.out.println("(Presione Enter para mantener el valor actual)");
+        Utilidades.imprimirLinea(80, '-');
         
-        System.out.print("Nuevo nombre (Enter para mantener): ");
+        System.out.print("Nuevo nombre: ");
         String nombre = scanner.nextLine();
-        if (!nombre.trim().isEmpty()) {
+        if (Utilidades.validarTextoNoVacio(nombre)) {
             docente.setNombre(nombre);
         }
         
-        System.out.print("Nueva cedula (Enter para mantener): ");
+        System.out.print("Nueva cedula (10 digitos): ");
         String cedula = scanner.nextLine();
-        if (!cedula.trim().isEmpty()) {
-            docente.setCedula(cedula);
+        if (Utilidades.validarTextoNoVacio(cedula)) {
+            if (Utilidades.validarCedula(cedula)) {
+                docente.setCedula(cedula);
+            } else {
+                System.out.println("ERROR: La cedula debe tener 10 digitos. No se actualizo.");
+            }
         }
         
-        System.out.print("Nueva especialidad (Enter para mantener): ");
+        System.out.print("Nueva especialidad: ");
         String especialidad = scanner.nextLine();
-        if (!especialidad.trim().isEmpty()) {
+        if (Utilidades.validarTextoNoVacio(especialidad)) {
             docente.setEspecialidad(especialidad);
         }
         
-        // Nota: Necesitaría un método actualizarDocente en el DAO
-        System.out.println("Docente actualizado (funcionalidad en desarrollo)");
-        return true;
+        if (docenteDAO.actualizarDocente(docente)) {
+            System.out.println("\n*** Docente actualizado exitosamente ***");
+        } else {
+            System.out.println("ERROR: No se pudo actualizar el docente");
+        }
     }
 }
