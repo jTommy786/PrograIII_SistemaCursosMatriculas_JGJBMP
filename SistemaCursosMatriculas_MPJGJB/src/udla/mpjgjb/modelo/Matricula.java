@@ -4,9 +4,8 @@ import java.time.LocalDate;
 
 /**
  * Clase Matricula
- * Representa la relación entre un estudiante y un curso
- * Conceptos POO: Asociación entre Estudiante y Curso
- * @author Julián
+ * Representa cuando un estudiante se inscribe en un curso.
+ * Guarda el ID del estudiante, el ID del curso y la fecha de inscripcion.
  */
 public class Matricula {
     private int id;
@@ -66,6 +65,10 @@ public class Matricula {
         this.fecha = fecha;
     }
 
+    /**
+     * Convierte la matricula a texto para mostrarla facilmente.
+     * Util para depuracion y logs.
+     */
     @Override
     public String toString() {
         return "Matricula{" +

@@ -1,5 +1,10 @@
 package udla.mpjgjb.modelo;
 
+/**
+ * Clase Curso
+ * Representa un curso que se puede dictar en el sistema.
+ * Tiene nombre, descripcion, cupos disponibles y puede tener un docente asignado.
+ */
 public class Curso {
     private int id;
     private String nombre;
@@ -71,7 +76,10 @@ public class Curso {
         this.docenteId = docenteId;
     }
     
-    // Verifica si hay cupos disponibles
+    /**
+     * Verifica si el curso tiene cupos disponibles.
+     * Devuelve true si hay al menos un cupo libre.
+     */
     public boolean hayCuposDisponibles() {
         return cuposDisponibles > 0;
     }

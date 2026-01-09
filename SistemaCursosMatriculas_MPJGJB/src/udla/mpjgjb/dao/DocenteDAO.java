@@ -12,7 +12,9 @@ import java.util.List;
  */
 public class DocenteDAO {
 
-    // Registra un nuevo docente en la base de datos
+    /**
+     * Registra un nuevo docente en la base de datos.
+     */
     public boolean registrarDocente(Docente docente) {
         String sql = "INSERT INTO docente (nombre, cedula, especialidad) VALUES (?, ?, ?)";
 
@@ -25,12 +27,13 @@ public class DocenteDAO {
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
 
-    // Lista todos los docentes de la base de datos
+    /**
+     * Lista todos los docentes de la base de datos.
+     */
     public List<Docente> listarDocentes() {
         List<Docente> docentes = new ArrayList<>();
         String sql = "SELECT * FROM docente";
@@ -49,35 +52,40 @@ public class DocenteDAO {
                 docentes.add(docente);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            // Si hay error, devuelve lista vacia
         }
 
         return docentes;
     }
 
-    // Busca un docente por su ID
+    /**
+     * Busca un docente por su ID.
+     */
     public Docente buscarDocentePorId(int id) {
         String sql = "SELECT * FROM docente WHERE id_docente = ?";
         try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
             pstmt.setInt(1, id);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Docente(
-                        rs.getInt("id_docente"),
-                        rs.getString("nombre"),
-                        rs.getString("cedula"),
-                        rs.getString("especialidad")
-                    );
-                }
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return new Docente(
+                    rs.getInt("id_docente"),
+                    rs.getString("nombre"),
+                    rs.getString("cedula"),
+                    rs.getString("especialidad")
+                );
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            // Si hay error, devuelve null
         }
         return null;
     }
 
-    // Actualiza un docente existente
+    /**
+     * Actualiza un docente existente.
+     */
     public boolean actualizarDocente(Docente docente) {
         String sql = "UPDATE docente SET nombre = ?, cedula = ?, especialidad = ? WHERE id_docente = ?";
         try (Connection conn = ConexionDB.getConexion();
@@ -88,12 +96,13 @@ public class DocenteDAO {
             pstmt.setInt(4, docente.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
 
-    // Elimina un docente por su ID
+    /**
+     * Elimina un docente por su ID.
+     */
     public boolean eliminarDocente(int id) {
         String sql = "DELETE FROM docente WHERE id_docente = ?";
         try (Connection conn = ConexionDB.getConexion();
@@ -101,7 +110,6 @@ public class DocenteDAO {
             pstmt.setInt(1, id);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }

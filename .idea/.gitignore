@@ -2,6 +2,7 @@
 /shelf/
 /workspace.xml
 /out/
+/*.class
 /SistemaCursosMatriculas_MPJGJB/out/
 # Ignored default folder with query files
 /queries/

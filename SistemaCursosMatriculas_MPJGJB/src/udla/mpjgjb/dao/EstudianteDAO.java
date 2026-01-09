@@ -12,7 +12,9 @@ import java.util.List;
  */
 public class EstudianteDAO {
 
-    // Registra un nuevo estudiante en la base de datos
+    /**
+     * Registra un nuevo estudiante en la base de datos.
+     */
     public boolean registrarEstudiante(Estudiante estudiante) {
         String sql = "INSERT INTO estudiante (nombre, cedula, email) VALUES (?, ?, ?)";
 
@@ -25,12 +27,13 @@ public class EstudianteDAO {
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
 
-    // Lista todos los estudiantes de la base de datos
+    /**
+     * Lista todos los estudiantes de la base de datos.
+     */
     public List<Estudiante> listarEstudiantes() {
         List<Estudiante> estudiantes = new ArrayList<>();
         String sql = "SELECT * FROM estudiante";
@@ -49,35 +52,39 @@ public class EstudianteDAO {
                 estudiantes.add(estudiante);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            // Si hay error, devuelve lista vacia
         }
 
         return estudiantes;
     }
 
-    // Busca un estudiante por su ID
+    /**
+     * Busca un estudiante por su ID.
+     */
     public Estudiante buscarEstudiantePorId(int id) {
         String sql = "SELECT * FROM estudiante WHERE id_estudiante = ?";
         try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            
             pstmt.setInt(1, id);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Estudiante(
-                        rs.getInt("id_estudiante"),
-                        rs.getString("nombre"),
-                        rs.getString("cedula"),
-                        rs.getString("email")
-                    );
-                }
+            if (rs.next()) {
+                return new Estudiante(
+                    rs.getInt("id_estudiante"),
+                    rs.getString("nombre"),
+                    rs.getString("cedula"),
+                    rs.getString("email")
+                );
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            // Si hay error, devuelve null
         }
         return null;
     }
 
-    // Actualiza un estudiante existente
+    /**
+     * Actualiza un estudiante existente.
+     */
     public boolean actualizarEstudiante(Estudiante estudiante) {
         String sql = "UPDATE estudiante SET nombre = ?, cedula = ?, email = ? WHERE id_estudiante = ?";
         try (Connection conn = ConexionDB.getConexion();
@@ -93,7 +100,9 @@ public class EstudianteDAO {
         }
     }
 
-    // Elimina un estudiante por su ID
+    /**
+     * Elimina un estudiante por su ID.
+     */
     public boolean eliminarEstudiante(int id) {
         String sql = "DELETE FROM estudiante WHERE id_estudiante = ?";
         try (Connection conn = ConexionDB.getConexion();
@@ -101,7 +110,6 @@ public class EstudianteDAO {
             pstmt.setInt(1, id);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
