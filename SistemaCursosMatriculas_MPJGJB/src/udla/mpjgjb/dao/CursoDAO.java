@@ -134,7 +134,7 @@ public class CursoDAO {
     /**
      * Actualiza los cupos disponibles de un curso.
      */
-    public void actualizarCupos(int cursoId, int cuposDisponibles) {
+    public boolean actualizarCupos(int cursoId, int cuposDisponibles) {
         String sql = "UPDATE curso SET cupos_disponibles = ? WHERE id_curso = ?";
         
         try (Connection conn = ConexionDB.getConexion();
@@ -142,10 +142,12 @@ public class CursoDAO {
             
             pstmt.setInt(1, cuposDisponibles);
             pstmt.setInt(2, cursoId);
-
-            pstmt.executeUpdate();
-
-        } catch (SQLException _) {
+            
+            int filasAfectadas = pstmt.executeUpdate();
+            return filasAfectadas > 0;
+            
+        } catch (SQLException e) {
+            return false;
         }
     }
     

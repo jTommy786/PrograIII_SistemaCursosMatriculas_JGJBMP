@@ -64,6 +64,7 @@ public class ServicioDocente implements GestionAcademica {
         
         if (docentes.isEmpty()) {
             System.out.println("\nNo hay docentes registrados.");
+            System.out.println("\nNo hay docentes registrados.");
             return;
         }
         
@@ -109,6 +110,7 @@ public class ServicioDocente implements GestionAcademica {
             System.out.println("Cedula:       " + docente.getCedula());
             System.out.println("Especialidad: " + docente.getEspecialidad());
             Utilidades.imprimirLinea(80, '=');
+            return true;
         } else {
             System.out.println("ERROR: Docente no encontrado");
         }
@@ -124,7 +126,10 @@ public class ServicioDocente implements GestionAcademica {
         }
         
         Utilidades.imprimirTitulo("ACTUALIZAR DOCENTE", 80);
+        Utilidades.imprimirTitulo("ACTUALIZAR DOCENTE", 80);
         System.out.println("Docente actual: " + docente.getNombre());
+        System.out.println("(Presione Enter para mantener el valor actual)");
+        Utilidades.imprimirLinea(80, '-');
         System.out.println("(Presione Enter para mantener el valor actual)");
         Utilidades.imprimirLinea(80, '-');
         

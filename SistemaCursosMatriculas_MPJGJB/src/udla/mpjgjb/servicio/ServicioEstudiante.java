@@ -68,16 +68,16 @@ public class ServicioEstudiante implements GestionAcademica {
         }
         
         Utilidades.imprimirTitulo("LISTADO DE ESTUDIANTES", 80);
-        
+
         int[] anchos = {5, 25, 12, 30};
         
         Utilidades.imprimirSeparador(anchos);
-        
+
         String[] encabezado = {"ID", "NOMBRE", "CEDULA", "EMAIL"};
         Utilidades.imprimirFila(encabezado, anchos);
-        
+
         Utilidades.imprimirSeparador(anchos);
-        
+
         for (Estudiante estudiante : estudiantes) {
             String[] fila = {
                 String.valueOf(estudiante.getId()),
@@ -87,7 +87,7 @@ public class ServicioEstudiante implements GestionAcademica {
             };
             Utilidades.imprimirFila(fila, anchos);
         }
-        
+
         Utilidades.imprimirSeparador(anchos);
         System.out.println("Total de estudiantes: " + estudiantes.size());
     }
@@ -120,7 +120,7 @@ public class ServicioEstudiante implements GestionAcademica {
         System.out.println("Estudiante actual: " + estudiante.getNombre());
         System.out.println("(Presione Enter para mantener el valor actual)");
         Utilidades.imprimirLinea(80, '-');
-        
+
         System.out.print("Nuevo nombre: ");
         String nombre = scanner.nextLine();
         if (Utilidades.validarTextoNoVacio(nombre)) {

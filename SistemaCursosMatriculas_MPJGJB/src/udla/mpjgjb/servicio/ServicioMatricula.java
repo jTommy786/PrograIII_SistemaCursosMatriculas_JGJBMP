@@ -7,6 +7,7 @@ import udla.mpjgjb.modelo.Matricula;
 import udla.mpjgjb.modelo.Estudiante;
 import udla.mpjgjb.modelo.Curso;
 import udla.mpjgjb.util.Utilidades;
+import udla.mpjgjb.util.Utilidades;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,6 +43,7 @@ public class ServicioMatricula implements GestionAcademica {
         System.out.print("ID del estudiante: ");
         String idEstudianteStr = scanner.nextLine();
         int idEstudiante = Utilidades.convertirAEntero(idEstudianteStr);
+        int idEstudiante = Utilidades.convertirAEntero(idEstudianteStr);
         
         if (idEstudiante <= 0) {
             System.out.println("ERROR: ID de estudiante invalido");
@@ -55,10 +57,12 @@ public class ServicioMatricula implements GestionAcademica {
             return;
         }
         System.out.println("[OK] Estudiante: " + estudiante.getNombre());
+        System.out.println("[OK] Estudiante: " + estudiante.getNombre());
         
         // Obtener ID del curso
         System.out.print("ID del curso: ");
         String idCursoStr = scanner.nextLine();
+        int idCurso = Utilidades.convertirAEntero(idCursoStr);
         int idCurso = Utilidades.convertirAEntero(idCursoStr);
         
         if (idCurso <= 0) {
@@ -73,6 +77,7 @@ public class ServicioMatricula implements GestionAcademica {
             return;
         }
         System.out.println("[OK] Curso: " + curso.getNombre());
+        System.out.println("[OK] Curso: " + curso.getNombre());
         
         // Verificar que hay cupos disponibles
         if (curso.getCuposDisponibles() <= 0) {
@@ -80,12 +85,14 @@ public class ServicioMatricula implements GestionAcademica {
             return;
         }
         System.out.println("[OK] Cupos disponibles: " + curso.getCuposDisponibles());
+        System.out.println("[OK] Cupos disponibles: " + curso.getCuposDisponibles());
         
         // Verificar que no hay matrícula duplicada
         if (matriculaDAO.existeMatricula(idEstudiante, idCurso)) {
             System.out.println("ERROR: Este estudiante ya esta matriculado en este curso");
             return;
         }
+        System.out.println("[OK] No existe matricula previa en este curso");
         System.out.println("[OK] No existe matricula previa en este curso");
         
         // Crear y registrar la matrícula
@@ -112,9 +119,26 @@ public class ServicioMatricula implements GestionAcademica {
         
         if (matriculas.isEmpty()) {
             System.out.println("\nNo hay matriculas registradas.");
+            System.out.println("\nNo hay matriculas registradas.");
             return;
         }
         
+        Utilidades.imprimirTitulo("LISTADO DE MATRICULAS", 100);
+        
+        // Definir anchos de columnas
+        int[] anchos = {5, 8, 8, 25, 25, 12};
+        
+        // Imprimir separador superior
+        Utilidades.imprimirSeparador(anchos);
+        
+        // Imprimir encabezado
+        String[] encabezado = {"ID", "ID_EST", "ID_CUR", "ESTUDIANTE", "CURSO", "FECHA"};
+        Utilidades.imprimirFila(encabezado, anchos);
+        
+        // Imprimir separador
+        Utilidades.imprimirSeparador(anchos);
+        
+        // Imprimir cada matrícula
         Utilidades.imprimirTitulo("LISTADO DE MATRICULAS", 100);
         
         // Definir anchos de columnas
@@ -147,7 +171,20 @@ public class ServicioMatricula implements GestionAcademica {
                 matricula.getFecha().toString()
             };
             Utilidades.imprimirFila(fila, anchos);
+            String[] fila = {
+                String.valueOf(matricula.getId()),
+                String.valueOf(matricula.getIdEstudiante()),
+                String.valueOf(matricula.getIdCurso()),
+                nomEstudiante,
+                nomCurso,
+                matricula.getFecha().toString()
+            };
+            Utilidades.imprimirFila(fila, anchos);
         }
+        
+        // Imprimir separador inferior
+        Utilidades.imprimirSeparador(anchos);
+        System.out.println("Total de matriculas: " + matriculas.size());
         
         // Imprimir separador inferior
         Utilidades.imprimirSeparador(anchos);
@@ -198,11 +235,29 @@ public class ServicioMatricula implements GestionAcademica {
         
         if (matriculas.isEmpty()) {
             System.out.println("\nEl estudiante " + estudiante.getNombre() + " no tiene matriculas registradas");
+            System.out.println("\nEl estudiante " + estudiante.getNombre() + " no tiene matriculas registradas");
             return;
         }
         
         Utilidades.imprimirTitulo("MATRICULAS DEL ESTUDIANTE", 80);
+        Utilidades.imprimirTitulo("MATRICULAS DEL ESTUDIANTE", 80);
         System.out.println("Estudiante: " + estudiante.getNombre());
+        Utilidades.imprimirLinea(80, '-');
+        
+        // Definir anchos de columnas
+        int[] anchos = {10, 30, 12};
+        
+        // Imprimir separador superior
+        Utilidades.imprimirSeparador(anchos);
+        
+        // Imprimir encabezado
+        String[] encabezado = {"ID_MATRIC", "CURSO", "FECHA"};
+        Utilidades.imprimirFila(encabezado, anchos);
+        
+        // Imprimir separador
+        Utilidades.imprimirSeparador(anchos);
+        
+        // Imprimir cada matrícula
         Utilidades.imprimirLinea(80, '-');
         
         // Definir anchos de columnas
@@ -234,6 +289,17 @@ public class ServicioMatricula implements GestionAcademica {
         // Imprimir separador inferior
         Utilidades.imprimirSeparador(anchos);
         System.out.println("Total de matriculas: " + matriculas.size());
+            String[] fila = {
+                String.valueOf(matricula.getId()),
+                nomCurso,
+                matricula.getFecha().toString()
+            };
+            Utilidades.imprimirFila(fila, anchos);
+        }
+        
+        // Imprimir separador inferior
+        Utilidades.imprimirSeparador(anchos);
+        System.out.println("Total de matriculas: " + matriculas.size());
     }
     
     /**
@@ -250,11 +316,29 @@ public class ServicioMatricula implements GestionAcademica {
         
         if (matriculas.isEmpty()) {
             System.out.println("\nEl curso " + curso.getNombre() + " no tiene estudiantes matriculados");
+            System.out.println("\nEl curso " + curso.getNombre() + " no tiene estudiantes matriculados");
             return;
         }
         
         Utilidades.imprimirTitulo("ESTUDIANTES MATRICULADOS EN CURSO", 80);
+        Utilidades.imprimirTitulo("ESTUDIANTES MATRICULADOS EN CURSO", 80);
         System.out.println("Curso: " + curso.getNombre());
+        Utilidades.imprimirLinea(80, '-');
+        
+        // Definir anchos de columnas
+        int[] anchos = {10, 25, 12, 12};
+        
+        // Imprimir separador superior
+        Utilidades.imprimirSeparador(anchos);
+        
+        // Imprimir encabezado
+        String[] encabezado = {"ID_MATRIC", "ESTUDIANTE", "CEDULA", "FECHA"};
+        Utilidades.imprimirFila(encabezado, anchos);
+        
+        // Imprimir separador
+        Utilidades.imprimirSeparador(anchos);
+        
+        // Imprimir cada matrícula
         Utilidades.imprimirLinea(80, '-');
         
         // Definir anchos de columnas
@@ -290,6 +374,22 @@ public class ServicioMatricula implements GestionAcademica {
         System.out.println("Estudiantes matriculados: " + matriculas.size() + 
                          " / Cupos totales: " + curso.getCuposTotales() +
                          " / Cupos disponibles: " + curso.getCuposDisponibles());
+            String cedula = (estudiante != null) ? estudiante.getCedula() : "N/A";
+            
+            String[] fila = {
+                String.valueOf(matricula.getId()),
+                nomEstudiante,
+                cedula,
+                matricula.getFecha().toString()
+            };
+            Utilidades.imprimirFila(fila, anchos);
+        }
+        
+        // Imprimir separador inferior
+        Utilidades.imprimirSeparador(anchos);
+        System.out.println("Estudiantes matriculados: " + matriculas.size() + 
+                         " / Cupos totales: " + curso.getCuposTotales() +
+                         " / Cupos disponibles: " + curso.getCuposDisponibles());
     }
     
     /**
@@ -300,6 +400,7 @@ public class ServicioMatricula implements GestionAcademica {
         System.out.print("ID de la matricula a cancelar: ");
         
         String idStr = scanner.nextLine();
+        int id = Utilidades.convertirAEntero(idStr);
         int id = Utilidades.convertirAEntero(idStr);
         
         if (id <= 0) {
