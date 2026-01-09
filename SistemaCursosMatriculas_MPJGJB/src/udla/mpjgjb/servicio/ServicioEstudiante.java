@@ -7,10 +7,7 @@ import udla.mpjgjb.util.Utilidades;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Servicio para gestionar estudiantes
- * Permite registrar, listar, buscar y actualizar estudiantes
- */
+// Servicio para gestionar estudiantes
 public class ServicioEstudiante implements GestionAcademica {
     
     private EstudianteDAO estudianteDAO;
@@ -151,6 +148,38 @@ public class ServicioEstudiante implements GestionAcademica {
             System.out.println("\n*** Estudiante actualizado exitosamente ***");
         } else {
             System.out.println("ERROR: No se pudo actualizar el estudiante");
+        }
+    }
+    
+    @Override
+    public void eliminar(int id) {
+        Estudiante estudiante = estudianteDAO.buscarEstudiantePorId(id);
+        
+        if (estudiante == null) {
+            System.out.println("ERROR: Estudiante no encontrado");
+            return;
+        }
+        
+        Utilidades.imprimirTitulo("ELIMINAR ESTUDIANTE", 80);
+        System.out.println("Estudiante: " + estudiante.getNombre());
+        System.out.println("Cedula:     " + estudiante.getCedula());
+        System.out.println("Email:      " + estudiante.getEmail());
+        Utilidades.imprimirLinea(80, '-');
+        
+        System.out.print("\n¿Esta seguro que desea eliminar este estudiante? (S/N): ");
+        String confirmacion = scanner.nextLine().trim().toUpperCase();
+        
+        if (!confirmacion.equals("S")) {
+            System.out.println("Operacion cancelada.");
+            return;
+        }
+        
+        if (estudianteDAO.eliminarEstudiante(id)) {
+            System.out.println("\n*** Estudiante eliminado exitosamente ***");
+        } else {
+            System.out.println("ERROR: No se pudo eliminar el estudiante.");
+            System.out.println("Verifique que el estudiante no tenga matriculas con estado ACTIVA.");
+            System.out.println("Debe cancelar o terminar todas las matriculas activas primero.");
         }
     }
 }

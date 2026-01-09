@@ -1,11 +1,19 @@
 package udla.mpjgjb.vista;
 
 import java.util.Scanner;
+import java.util.List;
 import udla.mpjgjb.servicio.ServicioMatricula;
 import udla.mpjgjb.servicio.ServicioCurso;
 import udla.mpjgjb.servicio.ServicioEstudiante;
 import udla.mpjgjb.servicio.ServicioDocente;
 import udla.mpjgjb.util.Utilidades;
+import udla.mpjgjb.util.SelectorPaginado;
+import udla.mpjgjb.dao.CursoDAO;
+import udla.mpjgjb.dao.DocenteDAO;
+import udla.mpjgjb.dao.EstudianteDAO;
+import udla.mpjgjb.modelo.Curso;
+import udla.mpjgjb.modelo.Docente;
+import udla.mpjgjb.modelo.Estudiante;
 
 /**
  * Clase MenuPrincipal
@@ -14,7 +22,7 @@ import udla.mpjgjb.util.Utilidades;
  */
 public class MenuPrincipal {
     
-    private Scanner scanner;
+    private final Scanner scanner;
     
     public MenuPrincipal() {
         this.scanner = new Scanner(System.in);
@@ -65,6 +73,7 @@ public class MenuPrincipal {
         System.out.println();
         System.out.println("====================================================");
         System.out.println("   SISTEMA DE GESTION DE CURSOS Y MATRICULAS");
+        System.out.println("   San Francisco de la Albernia");
         System.out.println("====================================================");
         System.out.println("1. Gestion");
         System.out.println("2. Matriculas");
@@ -118,6 +127,7 @@ public class MenuPrincipal {
     
     private void menuEstudiantes() {
         ServicioEstudiante servicioEstudiante = new ServicioEstudiante();
+        EstudianteDAO estudianteDAO = new EstudianteDAO();
         boolean volver = false;
         
         while (!volver) {
@@ -129,6 +139,7 @@ public class MenuPrincipal {
             System.out.println("2. Listar estudiantes");
             System.out.println("3. Buscar estudiante");
             System.out.println("4. Actualizar estudiante");
+            System.out.println("5. Eliminar estudiante");
             System.out.println("0. Volver al menu principal");
             System.out.println("====================================================");
             System.out.print("Seleccione una opcion: ");
@@ -168,6 +179,23 @@ public class MenuPrincipal {
                         System.out.println("ERROR: ID invalido");
                     }
                     break;
+                case 5:
+                    List<Estudiante> estudiantesElim = estudianteDAO.listarEstudiantes();
+                    if (estudiantesElim.isEmpty()) {
+                        System.out.println("ERROR: No hay estudiantes registrados");
+                        break;
+                    }
+                    
+                    SelectorPaginado selectorElimEst = new SelectorPaginado(scanner);
+                    System.out.println("\nSeleccione el estudiante a eliminar:");
+                    int idElim = selectorElimEst.seleccionarEstudiante(estudiantesElim);
+                    
+                    if (idElim > 0) {
+                        servicioEstudiante.eliminar(idElim);
+                    } else {
+                        System.out.println("Operacion cancelada");
+                    }
+                    break;
                 case 0:
                     volver = true;
                     break;
@@ -180,6 +208,7 @@ public class MenuPrincipal {
     // Menu de gestion de docentes
     private void menuDocentes() {
         ServicioDocente servicioDocente = new ServicioDocente();
+        DocenteDAO docenteDAO = new DocenteDAO();
         boolean volver = false;
         
         while (!volver) {
@@ -191,6 +220,7 @@ public class MenuPrincipal {
             System.out.println("2. Listar docentes");
             System.out.println("3. Buscar docente");
             System.out.println("4. Actualizar docente");
+            System.out.println("5. Eliminar docente");
             System.out.println("0. Volver al menu principal");
             System.out.println("====================================================");
             System.out.print("Seleccione una opcion: ");
@@ -230,6 +260,23 @@ public class MenuPrincipal {
                         System.out.println("ERROR: ID invalido");
                     }
                     break;
+                case 5:
+                    List<Docente> docentesElim = docenteDAO.listarDocentes();
+                    if (docentesElim.isEmpty()) {
+                        System.out.println("ERROR: No hay docentes registrados");
+                        break;
+                    }
+                    
+                    SelectorPaginado selectorElimDoc = new SelectorPaginado(scanner);
+                    System.out.println("\nSeleccione el docente a eliminar:");
+                    int idElimDoc = selectorElimDoc.seleccionarDocente(docentesElim);
+                    
+                    if (idElimDoc > 0) {
+                        servicioDocente.eliminar(idElimDoc);
+                    } else {
+                        System.out.println("Operacion cancelada");
+                    }
+                    break;
                 case 0:
                     volver = true;
                     break;
@@ -241,6 +288,8 @@ public class MenuPrincipal {
     
     private void menuCursos() {
         ServicioCurso servicioCurso = new ServicioCurso();
+        CursoDAO cursoDAO = new CursoDAO();
+        DocenteDAO docenteDAO = new DocenteDAO();
         boolean volver = false;
         
         while (!volver) {
@@ -252,6 +301,8 @@ public class MenuPrincipal {
             System.out.println("2. Listar cursos");
             System.out.println("3. Asignar docente a curso");
             System.out.println("4. Ver cupos disponibles");
+            System.out.println("5. Actualizar curso");
+            System.out.println("6. Eliminar curso");
             System.out.println("0. Volver al menu principal");
             System.out.println("====================================================");
             System.out.print("Seleccione una opcion: ");
@@ -272,27 +323,67 @@ public class MenuPrincipal {
                     servicioCurso.listar();
                     break;
                 case 3:
-                    System.out.print("ID del curso: ");
-                    String inputCurso = scanner.nextLine();
-                    int cursoId = Utilidades.convertirAEntero(inputCurso);
+                    // Usar selector paginado para asignar docente
+                    List<Curso> cursos = cursoDAO.listarCursos();
+                    if (cursos.isEmpty()) {
+                        System.out.println("ERROR: No hay cursos registrados");
+                        break;
+                    }
+                    
+                    SelectorPaginado selector = new SelectorPaginado(scanner);
+                    System.out.println("\nSeleccione el curso:");
+                    int cursoId = selector.seleccionarCurso(cursos);
                     
                     if (cursoId == -1) {
-                        System.out.println("Error: ID de curso invalido.");
+                        System.out.println("Operacion cancelada.");
                         break;
                     }
                     
-                    System.out.print("ID del docente: ");
-                    String inputDocente = scanner.nextLine();
-                    int docenteId = Utilidades.convertirAEntero(inputDocente);
+                    List<Docente> docentes = docenteDAO.listarDocentes();
+                    if (docentes.isEmpty()) {
+                        System.out.println("ERROR: No hay docentes registrados");
+                        break;
+                    }
+                    
+                    System.out.println("\nSeleccione el docente:");
+                    int docenteId = selector.seleccionarDocente(docentes);
                     
                     if (docenteId == -1) {
-                        System.out.println("Error: ID de docente invalido.");
+                        System.out.println("Operacion cancelada.");
                         break;
                     }
+                    
                     servicioCurso.asignarDocente(cursoId, docenteId);
                     break;
                 case 4:
                     servicioCurso.verCuposDisponibles();
+                    break;
+                case 5:
+                    System.out.print("Ingrese ID del curso a actualizar: ");
+                    String idActCursoStr = scanner.nextLine();
+                    int idActCurso = Utilidades.convertirAEntero(idActCursoStr);
+                    if (idActCurso > 0) {
+                        servicioCurso.actualizar(idActCurso);
+                    } else {
+                        System.out.println("ERROR: ID invalido");
+                    }
+                    break;
+                case 6:
+                    List<Curso> cursosElim = cursoDAO.listarCursos();
+                    if (cursosElim.isEmpty()) {
+                        System.out.println("ERROR: No hay cursos registrados");
+                        break;
+                    }
+                    
+                    SelectorPaginado selectorElimCurso = new SelectorPaginado(scanner);
+                    System.out.println("\nSeleccione el curso a eliminar:");
+                    int idElimCurso = selectorElimCurso.seleccionarCurso(cursosElim);
+                    
+                    if (idElimCurso > 0) {
+                        servicioCurso.eliminar(idElimCurso);
+                    } else {
+                        System.out.println("Operacion cancelada");
+                    }
                     break;
                 case 0:
                     volver = true;
@@ -305,6 +396,8 @@ public class MenuPrincipal {
     
     private void menuMatriculas() {
         ServicioMatricula servicioMatricula = new ServicioMatricula();
+        CursoDAO cursoDAO = new CursoDAO();
+        EstudianteDAO estudianteDAO = new EstudianteDAO();
         boolean volver = false;
         
         while (!volver) {
@@ -316,7 +409,7 @@ public class MenuPrincipal {
             System.out.println("2. Listar matriculas");
             System.out.println("3. Ver estudiantes matriculados en curso");
             System.out.println("4. Ver cursos de un estudiante");
-            System.out.println("5. Cancelar matricula");
+            System.out.println("5. Cambiar estado de matricula");
             System.out.println("0. Volver al menu principal");
             System.out.println("====================================================");
             System.out.print("Seleccione una opcion: ");
@@ -337,28 +430,42 @@ public class MenuPrincipal {
                     servicioMatricula.listar();
                     break;
                 case 3:
-                    System.out.print("Ingrese ID del curso: ");
-                    String idCursoStr = scanner.nextLine();
-                    int idCurso = Utilidades.convertirAEntero(idCursoStr);
+                    List<Curso> cursos = cursoDAO.listarCursos();
+                    if (cursos.isEmpty()) {
+                        System.out.println("ERROR: No hay cursos registrados");
+                        break;
+                    }
+                    
+                    SelectorPaginado selector3 = new SelectorPaginado(scanner);
+                    System.out.println("\nSeleccione el curso:");
+                    int idCurso = selector3.seleccionarCurso(cursos);
+                    
                     if (idCurso > 0) {
                         servicioMatricula.obtenerEstudiantesDelCurso(idCurso);
                     } else {
-                        System.out.println("ERROR: ID invalido");
+                        System.out.println("Operacion cancelada");
                     }
                     break;
                 case 4:
-                    System.out.print("Ingrese ID del estudiante: ");
-                    String idEstudianteStr = scanner.nextLine();
-                    int idEstudiante = Utilidades.convertirAEntero(idEstudianteStr);
+                    List<Estudiante> estudiantes = estudianteDAO.listarEstudiantes();
+                    if (estudiantes.isEmpty()) {
+                        System.out.println("ERROR: No hay estudiantes registrados");
+                        break;
+                    }
+                    
+                    SelectorPaginado selector4 = new SelectorPaginado(scanner);
+                    System.out.println("\nSeleccione el estudiante:");
+                    int idEstudiante = selector4.seleccionarEstudiante(estudiantes);
+                    
                     if (idEstudiante > 0) {
                         servicioMatricula.obtenerMatriculasDelEstudiante(idEstudiante);
                     } else {
-                        System.out.println("ERROR: ID invalido");
+                        System.out.println("Operacion cancelada");
                     }
                     break;
 
                 case 5:
-                    servicioMatricula.cancelarMatricula();
+                    servicioMatricula.editarEstadoMatricula();
                     break;
                 case 0:
                     volver = true;
@@ -372,6 +479,8 @@ public class MenuPrincipal {
     // Menu de consultas
     private void menuConsultas() {
         ServicioMatricula servicioMatricula = new ServicioMatricula();
+        CursoDAO cursoDAO = new CursoDAO();
+        EstudianteDAO estudianteDAO = new EstudianteDAO();
         boolean volver = false;
         
         while (!volver) {
@@ -396,23 +505,37 @@ public class MenuPrincipal {
             
             switch (opcion) {
                 case 1:
-                    System.out.print("Ingrese ID del curso: ");
-                    String idCursoStr = scanner.nextLine();
-                    int idCurso = Utilidades.convertirAEntero(idCursoStr);
+                    List<Curso> cursos = cursoDAO.listarCursos();
+                    if (cursos.isEmpty()) {
+                        System.out.println("ERROR: No hay cursos registrados");
+                        break;
+                    }
+                    
+                    SelectorPaginado selector1 = new SelectorPaginado(scanner);
+                    System.out.println("\nSeleccione el curso:");
+                    int idCurso = selector1.seleccionarCurso(cursos);
+                    
                     if (idCurso > 0) {
                         servicioMatricula.obtenerEstudiantesDelCurso(idCurso);
                     } else {
-                        System.out.println("ERROR: ID invalido");
+                        System.out.println("Operacion cancelada");
                     }
                     break;
                 case 2:
-                    System.out.print("Ingrese ID del estudiante: ");
-                    String idEstudianteStr = scanner.nextLine();
-                    int idEstudiante = Utilidades.convertirAEntero(idEstudianteStr);
+                    List<Estudiante> estudiantes = estudianteDAO.listarEstudiantes();
+                    if (estudiantes.isEmpty()) {
+                        System.out.println("ERROR: No hay estudiantes registrados");
+                        break;
+                    }
+                    
+                    SelectorPaginado selector2 = new SelectorPaginado(scanner);
+                    System.out.println("\nSeleccione el estudiante:");
+                    int idEstudiante = selector2.seleccionarEstudiante(estudiantes);
+                    
                     if (idEstudiante > 0) {
                         servicioMatricula.obtenerMatriculasDelEstudiante(idEstudiante);
                     } else {
-                        System.out.println("ERROR: ID invalido");
+                        System.out.println("Operacion cancelada");
                     }
                     break;
                 case 3:
@@ -435,7 +558,7 @@ public class MenuPrincipal {
     }
     
     // Metodo main para iniciar el sistema
-    public static void main() {
+    static void main() {
         MenuPrincipal menu = new MenuPrincipal();
         menu.iniciar();
     }

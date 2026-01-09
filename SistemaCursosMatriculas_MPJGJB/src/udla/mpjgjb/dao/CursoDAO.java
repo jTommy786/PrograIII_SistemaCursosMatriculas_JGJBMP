@@ -7,16 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO para gestionar cursos en la base de datos.
- * Maneja el registro, listado, busqueda y actualizacion de cursos.
- * Tambien gestiona la asignacion de docentes y el control de cupos.
- */
+// DAO para gestionar cursos en la base de datos
 public class CursoDAO {
     
-    /**
-     * Registra un nuevo curso en la base de datos.
-     */
+    // Registra un nuevo curso en la base de datos
     public boolean registrarCurso(Curso curso) {
         String sql = "INSERT INTO curso (nombre, descripcion, cupo_maximo, cupos_disponibles, id_docente) VALUES (?, ?, ?, ?, ?)";
         
@@ -42,9 +36,7 @@ public class CursoDAO {
         }
     }
     
-    /**
-     * Lista todos los cursos de la base de datos.
-     */
+    // Lista todos los cursos de la base de datos
     public List<Curso> listarCursos() {
         List<Curso> cursos = new ArrayList<>();
         String sql = "SELECT * FROM curso";
@@ -76,9 +68,7 @@ public class CursoDAO {
         return cursos;
     }
     
-    /**
-     * Busca un curso por su ID.
-     */
+    // Busca un curso por su ID
     public Curso buscarCursoPorId(int id) {
         String sql = "SELECT * FROM curso WHERE id_curso = ?";
         
@@ -111,9 +101,7 @@ public class CursoDAO {
         return null;
     }
     
-    /**
-     * Asigna un docente a un curso.
-     */
+    // Asigna un docente a un curso
     public boolean asignarDocente(int cursoId, int docenteId) {
         String sql = "UPDATE curso SET id_docente = ? WHERE id_curso = ?";
         
@@ -131,10 +119,8 @@ public class CursoDAO {
         }
     }
     
-    /**
-     * Actualiza los cupos disponibles de un curso.
-     */
-    public boolean actualizarCupos(int cursoId, int cuposDisponibles) {
+    // Actualiza los cupos disponibles de un curso
+    public void actualizarCupos(int cursoId, int cuposDisponibles) {
         String sql = "UPDATE curso SET cupos_disponibles = ? WHERE id_curso = ?";
         
         try (Connection conn = ConexionDB.getConexion();
@@ -142,18 +128,12 @@ public class CursoDAO {
             
             pstmt.setInt(1, cuposDisponibles);
             pstmt.setInt(2, cursoId);
-            
-            int filasAfectadas = pstmt.executeUpdate();
-            return filasAfectadas > 0;
-            
+
         } catch (SQLException e) {
-            return false;
         }
     }
     
-    /**
-     * Reduce un cupo disponible de un curso.
-     */
+    // Reduce un cupo disponible de un curso
     public boolean reducirCupo(int cursoId) {
         String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles - 1 WHERE id_curso = ? AND cupos_disponibles > 0";
         
@@ -229,7 +209,26 @@ public class CursoDAO {
     }
     
     // Elimina un curso por su ID
+    // Verifica que no tenga estudiantes matriculados con estado ACTIVA
     public boolean eliminarCurso(int id) {
+        // Primero verificar si el curso tiene estudiantes con matrículas activas
+        String sqlVerificar = "SELECT COUNT(*) FROM matricula WHERE id_curso = ? AND estado = 'ACTIVA'";
+        try (Connection conn = ConexionDB.getConexion();
+             PreparedStatement pstmtVerif = conn.prepareStatement(sqlVerificar)) {
+            
+            pstmtVerif.setInt(1, id);
+            ResultSet rs = pstmtVerif.executeQuery();
+            
+            if (rs.next() && rs.getInt(1) > 0) {
+                // El curso tiene estudiantes con matrículas activas, no se puede eliminar
+                return false;
+            }
+            
+        } catch (SQLException e) {
+            return false;
+        }
+        
+        // Si no tiene estudiantes con matrículas activas, proceder con la eliminación
         String sql = "DELETE FROM curso WHERE id_curso = ?";
         try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

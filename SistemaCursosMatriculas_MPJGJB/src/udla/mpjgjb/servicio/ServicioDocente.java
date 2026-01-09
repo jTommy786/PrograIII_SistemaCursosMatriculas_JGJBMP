@@ -7,10 +7,7 @@ import udla.mpjgjb.util.Utilidades;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Servicio para gestionar docentes
- * Permite registrar, listar, buscar y actualizar docentes
- */
+// Servicio para gestionar docentes
 public class ServicioDocente implements GestionAcademica {
     
     private DocenteDAO docenteDAO;
@@ -63,7 +60,6 @@ public class ServicioDocente implements GestionAcademica {
         List<Docente> docentes = docenteDAO.listarDocentes();
         
         if (docentes.isEmpty()) {
-            System.out.println("\nNo hay docentes registrados.");
             System.out.println("\nNo hay docentes registrados.");
             return;
         }
@@ -125,10 +121,7 @@ public class ServicioDocente implements GestionAcademica {
         }
         
         Utilidades.imprimirTitulo("ACTUALIZAR DOCENTE", 80);
-        Utilidades.imprimirTitulo("ACTUALIZAR DOCENTE", 80);
         System.out.println("Docente actual: " + docente.getNombre());
-        System.out.println("(Presione Enter para mantener el valor actual)");
-        Utilidades.imprimirLinea(80, '-');
         System.out.println("(Presione Enter para mantener el valor actual)");
         Utilidades.imprimirLinea(80, '-');
         
@@ -158,6 +151,37 @@ public class ServicioDocente implements GestionAcademica {
             System.out.println("\n*** Docente actualizado exitosamente ***");
         } else {
             System.out.println("ERROR: No se pudo actualizar el docente");
+        }
+    }
+    
+    @Override
+    public void eliminar(int id) {
+        Docente docente = docenteDAO.buscarDocentePorId(id);
+        
+        if (docente == null) {
+            System.out.println("ERROR: Docente no encontrado");
+            return;
+        }
+        
+        Utilidades.imprimirTitulo("ELIMINAR DOCENTE", 80);
+        System.out.println("Docente:      " + docente.getNombre());
+        System.out.println("Cedula:       " + docente.getCedula());
+        System.out.println("Especialidad: " + docente.getEspecialidad());
+        Utilidades.imprimirLinea(80, '-');
+        
+        System.out.print("\n¿Esta seguro que desea eliminar este docente? (S/N): ");
+        String confirmacion = scanner.nextLine().trim().toUpperCase();
+        
+        if (!confirmacion.equals("S")) {
+            System.out.println("Operacion cancelada.");
+            return;
+        }
+        
+        if (docenteDAO.eliminarDocente(id)) {
+            System.out.println("\n*** Docente eliminado exitosamente ***");
+        } else {
+            System.out.println("ERROR: No se pudo eliminar el docente.");
+            System.out.println("Verifique que el docente no tenga cursos asignados.");
         }
     }
 }

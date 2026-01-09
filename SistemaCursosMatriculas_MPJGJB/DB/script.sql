@@ -43,7 +43,7 @@ CREATE TABLE matricula (
     id_estudiante INT NOT NULL,
     id_curso INT NOT NULL,
     fecha DATE NOT NULL DEFAULT (CURRENT_DATE),
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVA',
     FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante) ON DELETE CASCADE,
-    FOREIGN KEY (id_curso) REFERENCES curso(id_curso) ON DELETE CASCADE,
-    CONSTRAINT uk_matricula_unica UNIQUE (id_estudiante, id_curso)
+    FOREIGN KEY (id_curso) REFERENCES curso(id_curso) ON DELETE CASCADE
 );

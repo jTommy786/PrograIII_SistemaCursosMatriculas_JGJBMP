@@ -11,7 +11,6 @@ import udla.mpjgjb.vista.MenuPrincipal;
  * - Ver informacion de matriculas y cupos.
  */
 public class Main {
-    
     public static void main(String[] args) {
         // Crear e iniciar el menu principal del sistema
         MenuPrincipal menu = new MenuPrincipal();

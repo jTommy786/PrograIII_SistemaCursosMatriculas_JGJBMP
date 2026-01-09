@@ -1,29 +1,20 @@
 package udla.mpjgjb.servicio;
 
-/**
- * Interface GestionAcademica
- * Define las operaciones basicas que deben tener todos los servicios.
- * Los servicios de Estudiante, Docente y Curso implementan esta interface.
- */
+// Interface para las operaciones basicas de gestion
 public interface GestionAcademica {
     
-    /**
-     * Registra un elemento en el sistema.
-     */
+    // Registra un elemento en el sistema
     void registrar();
     
-    /**
-     * Lista todos los elementos del sistema.
-     */
+    // Lista todos los elementos del sistema
     void listar();
     
-    /**
-     * Busca un elemento por su ID.
-     */
+    // Busca un elemento por su ID
     void buscar(int id);
     
-    /**
-     * Actualiza la informacion de un elemento.
-     */
+    // Actualiza la informacion de un elemento
     void actualizar(int id);
+    
+    // Elimina un elemento por su ID
+    void eliminar(int id);
 }

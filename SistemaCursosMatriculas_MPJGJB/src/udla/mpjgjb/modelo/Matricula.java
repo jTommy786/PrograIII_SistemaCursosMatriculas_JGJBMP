@@ -2,34 +2,35 @@ package udla.mpjgjb.modelo;
 
 import java.time.LocalDate;
 
-/**
- * Clase Matricula
- * Representa cuando un estudiante se inscribe en un curso.
- * Guarda el ID del estudiante, el ID del curso y la fecha de inscripcion.
- */
+// Representa cuando un estudiante se inscribe en un curso
+// Incluye el estado: ACTIVA, CANCELADA o TERMINADA
 public class Matricula {
     private int id;
     private int idEstudiante;
     private int idCurso;
     private LocalDate fecha;
+    private EstadoMatricula estado;
 
-    // Constructor vacío
+    // Constructor vacio
     public Matricula() {
+        this.estado = EstadoMatricula.ACTIVA;
     }
 
-    // Constructor con parámetros
-    public Matricula(int id, int idEstudiante, int idCurso, LocalDate fecha) {
+    // Constructor con parametros
+    public Matricula(int id, int idEstudiante, int idCurso, LocalDate fecha, EstadoMatricula estado) {
         this.id = id;
         this.idEstudiante = idEstudiante;
         this.idCurso = idCurso;
         this.fecha = fecha;
+        this.estado = estado;
     }
 
-    // Constructor sin ID (para inserciones nuevas)
+    // Constructor sin ID para inserciones nuevas
     public Matricula(int idEstudiante, int idCurso, LocalDate fecha) {
         this.idEstudiante = idEstudiante;
         this.idCurso = idCurso;
         this.fecha = fecha;
+        this.estado = EstadoMatricula.ACTIVA;
     }
 
     // Getters y Setters
@@ -65,10 +66,14 @@ public class Matricula {
         this.fecha = fecha;
     }
 
-    /**
-     * Convierte la matricula a texto para mostrarla facilmente.
-     * Util para depuracion y logs.
-     */
+    public EstadoMatricula getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoMatricula estado) {
+        this.estado = estado;
+    }
+
     @Override
     public String toString() {
         return "Matricula{" +
@@ -76,6 +81,7 @@ public class Matricula {
                 ", idEstudiante=" + idEstudiante +
                 ", idCurso=" + idCurso +
                 ", fecha=" + fecha +
+                ", estado=" + estado +
                 '}';
     }
 }

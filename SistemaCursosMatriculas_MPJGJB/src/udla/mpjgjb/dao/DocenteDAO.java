@@ -7,14 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO para la gestion de docentes en la base de datos
- */
+// DAO para la gestion de docentes en la base de datos
 public class DocenteDAO {
 
-    /**
-     * Registra un nuevo docente en la base de datos.
-     */
+    // Registra un nuevo docente en la base de datos
     public boolean registrarDocente(Docente docente) {
         String sql = "INSERT INTO docente (nombre, cedula, especialidad) VALUES (?, ?, ?)";
 
@@ -31,9 +27,7 @@ public class DocenteDAO {
         }
     }
 
-    /**
-     * Lista todos los docentes de la base de datos.
-     */
+    // Lista todos los docentes de la base de datos
     public List<Docente> listarDocentes() {
         List<Docente> docentes = new ArrayList<>();
         String sql = "SELECT * FROM docente";
@@ -58,9 +52,7 @@ public class DocenteDAO {
         return docentes;
     }
 
-    /**
-     * Busca un docente por su ID.
-     */
+    // Busca un docente por su ID
     public Docente buscarDocentePorId(int id) {
         String sql = "SELECT * FROM docente WHERE id_docente = ?";
         try (Connection conn = ConexionDB.getConexion();
@@ -83,9 +75,7 @@ public class DocenteDAO {
         return null;
     }
 
-    /**
-     * Actualiza un docente existente.
-     */
+    // Actualiza un docente existente
     public boolean actualizarDocente(Docente docente) {
         String sql = "UPDATE docente SET nombre = ?, cedula = ?, especialidad = ? WHERE id_docente = ?";
         try (Connection conn = ConexionDB.getConexion();
@@ -100,10 +90,27 @@ public class DocenteDAO {
         }
     }
 
-    /**
-     * Elimina un docente por su ID.
-     */
+    // Elimina un docente por su ID
+    // Verifica que no tenga cursos asignados antes de eliminar
     public boolean eliminarDocente(int id) {
+        // Primero verificar si el docente tiene cursos asignados
+        String sqlVerificar = "SELECT COUNT(*) FROM curso WHERE id_docente = ?";
+        try (Connection conn = ConexionDB.getConexion();
+             PreparedStatement pstmtVerif = conn.prepareStatement(sqlVerificar)) {
+            
+            pstmtVerif.setInt(1, id);
+            ResultSet rs = pstmtVerif.executeQuery();
+            
+            if (rs.next() && rs.getInt(1) > 0) {
+                // El docente tiene cursos asignados, no se puede eliminar
+                return false;
+            }
+            
+        } catch (SQLException e) {
+            return false;
+        }
+        
+        // Si no tiene cursos asignados, proceder con la eliminación
         String sql = "DELETE FROM docente WHERE id_docente = ?";
         try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

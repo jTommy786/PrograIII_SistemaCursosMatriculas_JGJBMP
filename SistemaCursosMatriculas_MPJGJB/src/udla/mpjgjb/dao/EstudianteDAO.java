@@ -7,14 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO para la gestion de estudiantes en la base de datos
- */
+// DAO para la gestion de estudiantes en la base de datos
 public class EstudianteDAO {
 
-    /**
-     * Registra un nuevo estudiante en la base de datos.
-     */
+    // Registra un nuevo estudiante en la base de datos
     public boolean registrarEstudiante(Estudiante estudiante) {
         String sql = "INSERT INTO estudiante (nombre, cedula, email) VALUES (?, ?, ?)";
 
@@ -31,9 +27,7 @@ public class EstudianteDAO {
         }
     }
 
-    /**
-     * Lista todos los estudiantes de la base de datos.
-     */
+    // Lista todos los estudiantes de la base de datos
     public List<Estudiante> listarEstudiantes() {
         List<Estudiante> estudiantes = new ArrayList<>();
         String sql = "SELECT * FROM estudiante";
@@ -58,16 +52,15 @@ public class EstudianteDAO {
         return estudiantes;
     }
 
-    /**
-     * Busca un estudiante por su ID.
-     */
+    // Busca un estudiante por su ID
     public Estudiante buscarEstudiantePorId(int id) {
         String sql = "SELECT * FROM estudiante WHERE id_estudiante = ?";
         try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            
             if (rs.next()) {
                 return new Estudiante(
                     rs.getInt("id_estudiante"),
@@ -82,9 +75,7 @@ public class EstudianteDAO {
         return null;
     }
 
-    /**
-     * Actualiza un estudiante existente.
-     */
+    // Actualiza un estudiante existente
     public boolean actualizarEstudiante(Estudiante estudiante) {
         String sql = "UPDATE estudiante SET nombre = ?, cedula = ?, email = ? WHERE id_estudiante = ?";
         try (Connection conn = ConexionDB.getConexion();
@@ -100,10 +91,27 @@ public class EstudianteDAO {
         }
     }
 
-    /**
-     * Elimina un estudiante por su ID.
-     */
+    // Elimina un estudiante por su ID
+    // Verifica que no tenga matrículas activas antes de eliminar
     public boolean eliminarEstudiante(int id) {
+        // Verificar si el estudiante tiene matrículas activas
+        String sqlVerificar = "SELECT COUNT(*) FROM matricula WHERE id_estudiante = ? AND estado = 'ACTIVA'";
+        try (Connection conn = ConexionDB.getConexion();
+             PreparedStatement pstmtVerif = conn.prepareStatement(sqlVerificar)) {
+            
+            pstmtVerif.setInt(1, id);
+            ResultSet rs = pstmtVerif.executeQuery();
+            
+            if (rs.next() && rs.getInt(1) > 0) {
+                // El estudiante tiene matrículas activas, no se puede eliminar
+                return false;
+            }
+            
+        } catch (SQLException e) {
+            return false;
+        }
+        
+        // Si no tiene matrículas activas, proceder con la eliminación
         String sql = "DELETE FROM estudiante WHERE id_estudiante = ?";
         try (Connection conn = ConexionDB.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
