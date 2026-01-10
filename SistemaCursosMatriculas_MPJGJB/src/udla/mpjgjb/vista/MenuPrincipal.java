@@ -73,7 +73,7 @@ public class MenuPrincipal {
         System.out.println();
         System.out.println("====================================================");
         System.out.println("   SISTEMA DE GESTION DE CURSOS Y MATRICULAS");
-        System.out.println("   San Francisco de la Albernia");
+        System.out.println("   Unidad Educativa San Francisco de la Alvernia");
         System.out.println("====================================================");
         System.out.println("1. Gestion");
         System.out.println("2. Matriculas");
