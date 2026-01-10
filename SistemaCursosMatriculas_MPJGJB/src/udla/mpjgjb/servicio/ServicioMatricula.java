@@ -43,7 +43,7 @@ public class ServicioMatricula implements GestionAcademica {
         
         SelectorPaginado selector = new SelectorPaginado(scanner);
         int idEstudiante = selector.seleccionarEstudiante(estudiantes);
-        
+
         if (idEstudiante == -1) {
             System.out.println("Operacion cancelada.");
             return;
@@ -63,9 +63,9 @@ public class ServicioMatricula implements GestionAcademica {
             System.out.println("ERROR: No hay cursos registrados en el sistema");
             return;
         }
-        
+
         int idCurso = selector.seleccionarCurso(cursos);
-        
+
         if (idCurso == -1) {
             System.out.println("Operacion cancelada.");
             return;
@@ -196,26 +196,26 @@ public class ServicioMatricula implements GestionAcademica {
             System.out.println("ERROR: Matricula no encontrada");
             return;
         }
-        
+
         // Obtener información del estudiante y curso
         Estudiante estudiante = estudianteDAO.buscarEstudiantePorId(matricula.getIdEstudiante());
         Curso curso = cursoDAO.buscarCursoPorId(matricula.getIdCurso());
-        
+
         Utilidades.imprimirTitulo("ELIMINAR MATRICULA", 80);
         System.out.println("ID Matricula: " + matricula.getId());
         System.out.println("Estudiante:   " + (estudiante != null ? estudiante.getNombre() : "No encontrado"));
         System.out.println("Curso:        " + (curso != null ? curso.getNombre() : "No encontrado"));
         System.out.println("Fecha:        " + matricula.getFecha());
         Utilidades.imprimirLinea(80, '-');
-        
+
         System.out.print("\n¿Esta seguro que desea eliminar esta matricula? (S/N): ");
         String confirmacion = scanner.nextLine().trim().toUpperCase();
-        
+
         if (!confirmacion.equals("S")) {
             System.out.println("Operacion cancelada.");
             return;
         }
-        
+
         if (matriculaDAO.cancelarMatricula(id)) {
             System.out.println("\n*** Matricula eliminada exitosamente ***");
             System.out.println("El cupo ha sido devuelto al curso.");
@@ -342,23 +342,23 @@ public class ServicioMatricula implements GestionAcademica {
             System.out.println("ERROR: ID invalido");
             return;
         }
-        
+
         // Buscar la matrícula antes de cancelar
         Matricula matricula = matriculaDAO.buscarMatriculaPorId(id);
         if (matricula == null) {
             System.out.println("ERROR: Matricula no encontrada");
             return;
         }
-        
+
         if (matricula.getEstado() == EstadoMatricula.CANCELADA) {
             System.out.println("ERROR: Esta matricula ya esta cancelada");
             return;
         }
-        
+
         // Obtener información del estudiante y curso
         Estudiante estudiante = estudianteDAO.buscarEstudiantePorId(matricula.getIdEstudiante());
         Curso curso = cursoDAO.buscarCursoPorId(matricula.getIdCurso());
-        
+
         // Mostrar información de la matrícula
         System.out.println("\nInformacion de la matricula:");
         System.out.println("  ID Matricula: " + matricula.getId());
@@ -366,16 +366,16 @@ public class ServicioMatricula implements GestionAcademica {
         System.out.println("  Curso:        " + (curso != null ? curso.getNombre() : "No encontrado"));
         System.out.println("  Fecha:        " + matricula.getFecha());
         System.out.println("  Estado actual: " + matricula.getEstado());
-        
+
         // Confirmar cancelación
         System.out.print("\n¿Esta seguro que desea cancelar esta matricula? (S/N): ");
         String confirmacion = scanner.nextLine().trim().toUpperCase();
-        
+
         if (!confirmacion.equals("S")) {
             System.out.println("Operacion cancelada.");
             return;
         }
-        
+
         if (matriculaDAO.cancelarMatricula(id)) {
             System.out.println("\n*** Matricula cancelada exitosamente ***");
             if (matricula.getEstado() == EstadoMatricula.ACTIVA) {
@@ -385,46 +385,46 @@ public class ServicioMatricula implements GestionAcademica {
             System.out.println("ERROR: No se pudo cancelar la matricula");
         }
     }
-    
+
     // Edita el estado de una matricula
     public void editarEstadoMatricula() {
         Utilidades.imprimirTitulo("CAMBIAR ESTADO DE MATRICULA", 80);
-        
+
         // Obtener lista de todas las matriculas
         List<Matricula> matriculas = matriculaDAO.listarMatriculas();
         if (matriculas.isEmpty()) {
             System.out.println("ERROR: No hay matriculas registradas en el sistema");
             return;
         }
-        
+
         // Usar selector paginado para elegir la matricula
         SelectorPaginado selector = new SelectorPaginado(scanner);
         System.out.println("\nSeleccione la matricula:");
         int id = selector.seleccionarMatricula(matriculas);
-        
+
         if (id == -1) {
             System.out.println("Operacion cancelada.");
             return;
         }
-        
+
         // Buscar la matrícula
         Matricula matricula = matriculaDAO.buscarMatriculaPorId(id);
         if (matricula == null) {
             System.out.println("ERROR: Matricula no encontrada");
             return;
         }
-        
+
         // Verificar si la matrícula está cancelada (irreversible)
         if (matricula.getEstado() == EstadoMatricula.CANCELADA) {
             System.out.println("\nERROR: Esta matricula ha sido CANCELADA");
             System.out.println("El estado CANCELADA es IRREVERSIBLE y no se puede modificar.");
             return;
         }
-        
+
         // Obtener información del estudiante y curso
         Estudiante estudiante = estudianteDAO.buscarEstudiantePorId(matricula.getIdEstudiante());
         Curso curso = cursoDAO.buscarCursoPorId(matricula.getIdCurso());
-        
+
         // Mostrar información de la matrícula
         System.out.println("\nInformacion de la matricula:");
         System.out.println("  ID Matricula: " + matricula.getId());
@@ -432,7 +432,7 @@ public class ServicioMatricula implements GestionAcademica {
         System.out.println("  Curso:        " + (curso != null ? curso.getNombre() : "No encontrado"));
         System.out.println("  Fecha:        " + matricula.getFecha());
         System.out.println("  Estado actual: " + matricula.getEstado());
-        
+
         // Mostrar opciones de estado
         System.out.println("\nSeleccione el nuevo estado:");
         System.out.println("1. ACTIVA");
@@ -440,15 +440,15 @@ public class ServicioMatricula implements GestionAcademica {
         System.out.println("3. TERMINADA");
         System.out.println("0. Cancelar operacion");
         System.out.print("Opcion: ");
-        
+
         String opcionStr = scanner.nextLine();
         int opcion = Utilidades.convertirAEntero(opcionStr);
-        
+
         if (opcion == 0) {
             System.out.println("Operacion cancelada.");
             return;
         }
-        
+
         EstadoMatricula nuevoEstado;
         switch (opcion) {
             case 1:
@@ -464,7 +464,7 @@ public class ServicioMatricula implements GestionAcademica {
                 System.out.println("ERROR: Opcion invalida");
                 return;
         }
-        
+
         // Confirmar cambio con advertencia especial para CANCELADA
         if (nuevoEstado == EstadoMatricula.CANCELADA) {
             Utilidades.imprimirLinea(80, '!');
@@ -476,23 +476,23 @@ public class ServicioMatricula implements GestionAcademica {
         } else {
             System.out.print("\n¿Esta seguro que desea cambiar el estado a " + nuevoEstado + "? (S/N): ");
         }
-        
+
         String confirmacion = scanner.nextLine().trim().toUpperCase();
-        
+
         if (!confirmacion.equals("S")) {
             System.out.println("Operacion cancelada.");
             return;
         }
-        
+
         if (matriculaDAO.cambiarEstadoMatricula(id, nuevoEstado)) {
             System.out.println("\n*** Estado de matricula actualizado exitosamente ***");
             System.out.println("Estado anterior: " + matricula.getEstado());
             System.out.println("Estado nuevo:    " + nuevoEstado);
-            
+
             if (nuevoEstado == EstadoMatricula.CANCELADA) {
                 System.out.println("\nNOTA: El estado CANCELADA es IRREVERSIBLE.");
             }
-            
+
             if (matricula.getEstado() == EstadoMatricula.ACTIVA && nuevoEstado != EstadoMatricula.ACTIVA) {
                 System.out.println("El cupo ha sido devuelto al curso.");
             } else if (matricula.getEstado() != EstadoMatricula.ACTIVA && nuevoEstado == EstadoMatricula.ACTIVA) {

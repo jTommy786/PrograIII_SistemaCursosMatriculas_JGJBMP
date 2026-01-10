@@ -185,11 +185,11 @@ public class MenuPrincipal {
                         System.out.println("ERROR: No hay estudiantes registrados");
                         break;
                     }
-                    
+
                     SelectorPaginado selectorElimEst = new SelectorPaginado(scanner);
                     System.out.println("\nSeleccione el estudiante a eliminar:");
                     int idElim = selectorElimEst.seleccionarEstudiante(estudiantesElim);
-                    
+
                     if (idElim > 0) {
                         servicioEstudiante.eliminar(idElim);
                     } else {
@@ -266,11 +266,11 @@ public class MenuPrincipal {
                         System.out.println("ERROR: No hay docentes registrados");
                         break;
                     }
-                    
+
                     SelectorPaginado selectorElimDoc = new SelectorPaginado(scanner);
                     System.out.println("\nSeleccione el docente a eliminar:");
                     int idElimDoc = selectorElimDoc.seleccionarDocente(docentesElim);
-                    
+
                     if (idElimDoc > 0) {
                         servicioDocente.eliminar(idElimDoc);
                     } else {
@@ -329,7 +329,7 @@ public class MenuPrincipal {
                         System.out.println("ERROR: No hay cursos registrados");
                         break;
                     }
-                    
+
                     SelectorPaginado selector = new SelectorPaginado(scanner);
                     System.out.println("\nSeleccione el curso:");
                     int cursoId = selector.seleccionarCurso(cursos);
@@ -338,7 +338,7 @@ public class MenuPrincipal {
                         System.out.println("Operacion cancelada.");
                         break;
                     }
-                    
+
                     List<Docente> docentes = docenteDAO.listarDocentes();
                     if (docentes.isEmpty()) {
                         System.out.println("ERROR: No hay docentes registrados");
@@ -352,7 +352,7 @@ public class MenuPrincipal {
                         System.out.println("Operacion cancelada.");
                         break;
                     }
-                    
+
                     servicioCurso.asignarDocente(cursoId, docenteId);
                     break;
                 case 4:
@@ -374,11 +374,11 @@ public class MenuPrincipal {
                         System.out.println("ERROR: No hay cursos registrados");
                         break;
                     }
-                    
+
                     SelectorPaginado selectorElimCurso = new SelectorPaginado(scanner);
                     System.out.println("\nSeleccione el curso a eliminar:");
                     int idElimCurso = selectorElimCurso.seleccionarCurso(cursosElim);
-                    
+
                     if (idElimCurso > 0) {
                         servicioCurso.eliminar(idElimCurso);
                     } else {
@@ -435,11 +435,11 @@ public class MenuPrincipal {
                         System.out.println("ERROR: No hay cursos registrados");
                         break;
                     }
-                    
+
                     SelectorPaginado selector3 = new SelectorPaginado(scanner);
                     System.out.println("\nSeleccione el curso:");
                     int idCurso = selector3.seleccionarCurso(cursos);
-                    
+
                     if (idCurso > 0) {
                         servicioMatricula.obtenerEstudiantesDelCurso(idCurso);
                     } else {
@@ -452,11 +452,11 @@ public class MenuPrincipal {
                         System.out.println("ERROR: No hay estudiantes registrados");
                         break;
                     }
-                    
+
                     SelectorPaginado selector4 = new SelectorPaginado(scanner);
                     System.out.println("\nSeleccione el estudiante:");
                     int idEstudiante = selector4.seleccionarEstudiante(estudiantes);
-                    
+
                     if (idEstudiante > 0) {
                         servicioMatricula.obtenerMatriculasDelEstudiante(idEstudiante);
                     } else {
@@ -510,11 +510,11 @@ public class MenuPrincipal {
                         System.out.println("ERROR: No hay cursos registrados");
                         break;
                     }
-                    
+
                     SelectorPaginado selector1 = new SelectorPaginado(scanner);
                     System.out.println("\nSeleccione el curso:");
                     int idCurso = selector1.seleccionarCurso(cursos);
-                    
+
                     if (idCurso > 0) {
                         servicioMatricula.obtenerEstudiantesDelCurso(idCurso);
                     } else {
@@ -527,11 +527,11 @@ public class MenuPrincipal {
                         System.out.println("ERROR: No hay estudiantes registrados");
                         break;
                     }
-                    
+
                     SelectorPaginado selector2 = new SelectorPaginado(scanner);
                     System.out.println("\nSeleccione el estudiante:");
                     int idEstudiante = selector2.seleccionarEstudiante(estudiantes);
-                    
+
                     if (idEstudiante > 0) {
                         servicioMatricula.obtenerMatriculasDelEstudiante(idEstudiante);
                     } else {

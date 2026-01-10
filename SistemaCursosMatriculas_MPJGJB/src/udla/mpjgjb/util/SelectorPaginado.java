@@ -247,7 +247,7 @@ public class SelectorPaginado {
         Utilidades.imprimirSeparador(anchos);
         System.out.println("Mostrando " + (inicio + 1) + "-" + fin + " de " + cursos.size() + " cursos");
     }
-    
+
     /**
      * Permite seleccionar una matricula de una lista paginada
      * @return ID de la matricula seleccionada, o -1 si se cancela
@@ -257,18 +257,18 @@ public class SelectorPaginado {
             System.out.println("No hay matriculas disponibles.");
             return -1;
         }
-        
+
         int paginaActual = 0;
         int totalPaginas = (int) Math.ceil((double) matriculas.size() / ITEMS_POR_PAGINA);
-        
+
         while (true) {
             mostrarMatriculasPaginadas(matriculas, paginaActual, totalPaginas);
-            
+
             System.out.println("\nOpciones:");
             System.out.println("  [N] Siguiente pagina | [A] Anterior | [numero] Seleccionar ID | [0] Cancelar");
             System.out.print("Ingrese opcion: ");
             String opcion = scanner.nextLine().trim().toUpperCase();
-            
+
             if (opcion.equals("0")) {
                 return -1;
             } else if (opcion.equals("N") && paginaActual < totalPaginas - 1) {
@@ -290,24 +290,24 @@ public class SelectorPaginado {
             }
         }
     }
-    
+
     /**
      * Muestra matriculas de forma paginada
      */
     private void mostrarMatriculasPaginadas(List<Matricula> matriculas, int pagina, int totalPaginas) {
         System.out.println();
         Utilidades.imprimirTitulo("SELECCIONAR MATRICULA - Pagina " + (pagina + 1) + "/" + totalPaginas, 80);
-        
+
         int inicio = pagina * ITEMS_POR_PAGINA;
         int fin = Math.min(inicio + ITEMS_POR_PAGINA, matriculas.size());
-        
+
         int[] anchos = {5, 8, 8, 12, 12};
         Utilidades.imprimirSeparador(anchos);
-        
+
         String[] encabezado = {"ID", "ID_EST", "ID_CUR", "FECHA", "ESTADO"};
         Utilidades.imprimirFila(encabezado, anchos);
         Utilidades.imprimirSeparador(anchos);
-        
+
         for (int i = inicio; i < fin; i++) {
             Matricula mat = matriculas.get(i);
             String[] fila = {
@@ -319,7 +319,7 @@ public class SelectorPaginado {
             };
             Utilidades.imprimirFila(fila, anchos);
         }
-        
+
         Utilidades.imprimirSeparador(anchos);
         System.out.println("Mostrando " + (inicio + 1) + "-" + fin + " de " + matriculas.size() + " matriculas");
     }
