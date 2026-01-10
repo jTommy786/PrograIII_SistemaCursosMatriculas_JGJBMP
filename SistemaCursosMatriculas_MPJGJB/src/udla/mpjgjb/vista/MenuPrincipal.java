@@ -556,10 +556,4 @@ public class MenuPrincipal {
             }
         }
     }
-    
-    // Metodo main para iniciar el sistema
-    static void main() {
-        MenuPrincipal menu = new MenuPrincipal();
-        menu.iniciar();
-    }
 }

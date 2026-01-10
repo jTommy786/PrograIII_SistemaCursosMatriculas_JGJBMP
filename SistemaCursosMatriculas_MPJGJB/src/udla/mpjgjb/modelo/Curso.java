@@ -76,28 +76,6 @@ public class Curso {
         this.docenteId = docenteId;
     }
     
-    /**
-     * Verifica si el curso tiene cupos disponibles.
-     * Devuelve true si hay al menos un cupo libre.
-     */
-    public boolean hayCuposDisponibles() {
-        return cuposDisponibles > 0;
-    }
-    
-    // Reduce un cupo disponible
-    public void reducirCupo() {
-        if (cuposDisponibles > 0) {
-            cuposDisponibles--;
-        }
-    }
-    
-    // Aumenta un cupo disponible
-    public void aumentarCupo() {
-        if (cuposDisponibles < cuposTotales) {
-            cuposDisponibles++;
-        }
-    }
-    
     @Override
     public String toString() {
         return "Curso{" +

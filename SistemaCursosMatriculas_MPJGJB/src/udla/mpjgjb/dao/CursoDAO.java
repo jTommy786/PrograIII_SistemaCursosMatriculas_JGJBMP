@@ -133,61 +133,6 @@ public class CursoDAO {
         }
     }
     
-    // Reduce un cupo disponible de un curso
-    public boolean reducirCupo(int cursoId) {
-        String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles - 1 WHERE id_curso = ? AND cupos_disponibles > 0";
-        
-        try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, cursoId);
-            
-            int filasAfectadas = pstmt.executeUpdate();
-            return filasAfectadas > 0;
-            
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-    
-    // Aumenta un cupo disponible de un curso
-    public boolean aumentarCupo(int cursoId) {
-        String sql = "UPDATE curso SET cupos_disponibles = cupos_disponibles + 1 WHERE id_curso = ? AND cupos_disponibles < cupo_maximo";
-        
-        try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, cursoId);
-            
-            int filasAfectadas = pstmt.executeUpdate();
-            return filasAfectadas > 0;
-            
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-    
-    // Verifica si un curso tiene cupos disponibles
-    public boolean hayCuposDisponibles(int cursoId) {
-        String sql = "SELECT cupos_disponibles FROM curso WHERE id_curso = ?";
-        
-        try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, cursoId);
-            ResultSet rs = pstmt.executeQuery();
-            
-            if (rs.next()) {
-                return rs.getInt("cupos_disponibles") > 0;
-            }
-            
-        } catch (SQLException e) {
-            // Si hay error, devuelve false
-        }
-        
-        return false;
-    }
-    
     // Actualiza la informacion de un curso
     public boolean actualizarCurso(Curso curso) {
         String sql = "UPDATE curso SET nombre = ?, descripcion = ?, cupo_maximo = ? WHERE id_curso = ?";

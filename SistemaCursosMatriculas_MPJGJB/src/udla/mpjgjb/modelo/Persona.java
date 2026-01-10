@@ -40,10 +40,4 @@ public abstract class Persona {
     public void setCedula(String cedula) {
         this.cedula = cedula;
     }
-
-    /**
-     * Metodo abstracto que debe ser implementado por las clases hijas.
-     * Devuelve un texto con la informacion de la persona.
-     */
-    public abstract String obtenerInformacion();
 }

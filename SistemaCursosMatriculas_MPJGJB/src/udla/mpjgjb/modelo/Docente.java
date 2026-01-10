@@ -21,9 +21,4 @@ public class Docente extends Persona {
     public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
     }
-
-    @Override
-    public String obtenerInformacion() {
-        return "Docente: " + getNombre() + ", Cedula: " + getCedula() + ", Especialidad: " + especialidad;
-    }
 }

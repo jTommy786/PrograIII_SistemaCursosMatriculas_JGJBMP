@@ -11,6 +11,17 @@ import java.util.List;
 // DAO para gestionar matriculas en la base de datos
 public class MatriculaDAO {
 
+    // Convierte un String a EstadoMatricula
+    private EstadoMatricula convertirEstado(String texto) {
+        if (texto == null) return EstadoMatricula.ACTIVA;
+        
+        try {
+            return EstadoMatricula.valueOf(texto.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return EstadoMatricula.ACTIVA;
+        }
+    }
+
     // Registra una nueva matricula con estado ACTIVA
     // Valida que no exista matricula activa previa y que haya cupos
     public boolean registrarMatricula(Matricula matricula) {
@@ -55,7 +66,7 @@ public class MatriculaDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                EstadoMatricula estado = EstadoMatricula.fromString(rs.getString("estado"));
+                EstadoMatricula estado = convertirEstado(rs.getString("estado"));
                 Matricula matricula = new Matricula(
                         rs.getInt("id_matricula"),
                         rs.getInt("id_estudiante"),
@@ -84,7 +95,7 @@ public class MatriculaDAO {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                EstadoMatricula estado = EstadoMatricula.fromString(rs.getString("estado"));
+                EstadoMatricula estado = convertirEstado(rs.getString("estado"));
                 return new Matricula(
                         rs.getInt("id_matricula"),
                         rs.getInt("id_estudiante"),
@@ -113,7 +124,7 @@ public class MatriculaDAO {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                EstadoMatricula estado = EstadoMatricula.fromString(rs.getString("estado"));
+                EstadoMatricula estado = convertirEstado(rs.getString("estado"));
                 Matricula matricula = new Matricula(
                         rs.getInt("id_matricula"),
                         rs.getInt("id_estudiante"),
@@ -143,7 +154,7 @@ public class MatriculaDAO {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                EstadoMatricula estado = EstadoMatricula.fromString(rs.getString("estado"));
+                EstadoMatricula estado = convertirEstado(rs.getString("estado"));
                 Matricula matricula = new Matricula(
                         rs.getInt("id_matricula"),
                         rs.getInt("id_estudiante"),
@@ -292,26 +303,5 @@ public class MatriculaDAO {
         } catch (SQLException e) {
             return false;
         }
-    }
-
-    // Obtiene el numero de estudiantes matriculados en un curso
-    public int obtenerCantidadEstudiantesEnCurso(int idCurso) {
-        String sql = "SELECT COUNT(*) FROM matricula WHERE id_curso = ?";
-
-        try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idCurso);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            // Si hay error, devuelve 0
-        }
-
-        return 0;
     }
 }
